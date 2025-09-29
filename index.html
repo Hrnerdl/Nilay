@@ -14,22 +14,12 @@
 
     <main>
         
-        <section class="input-form">
-            <h2>Nöbet Girişi</h2>
-            <form id="shift-form">
-                <div class="form-group">
-                    <label for="shift-date">Tarih:</label>
-                    <input type="date" id="shift-date" name="shift-date" required>
-                </div>
-                <div class="form-group">
-                    <label for="shift-hours">Çalışma Saati (Saat):</label>
-                    <input type="number" id="shift-hours" name="shift-hours" min="1" max="24" required>
-                </div>
-                <button type="submit" id="add-shift-btn">Nöbeti Ekle</button>
-            </form>
+        <section class="start-section" id="start-section">
+            <p>Hangi aya ait nöbetleri girmek istersin?</p>
+            <button id="open-input-modal-btn">Bu Ayın Nöbetlerini Gir/Düzenle</button>
         </section>
 
-        <section class="calendar-container">
+        <section class="calendar-container hidden" id="calendar-view">
             <div class="calendar-header">
                 <button id="prev-month"> &lt; </button>
                 <h2 id="current-month-year"></h2>
@@ -37,8 +27,28 @@
             </div>
             <div class="calendar" id="calendar">
                 </div>
+            <button id="reopen-input-modal-btn" class="edit-all-btn">Tüm Ayı Toplu Düzenle</button>
         </section>
 
+        <div id="full-month-input-modal" class="modal">
+            <div class="modal-content large-modal">
+                <span class="close-button">&times;</span>
+                <h3><span id="modal-month-name"></span> Ayı Nöbet Girişi</h3>
+                
+                <form id="full-month-shift-form">
+                    <div class="form-group month-selector">
+                        <label for="input-month">Giriş Yapılacak Ay:</label>
+                        <input type="month" id="input-month" required>
+                    </div>
+
+                    <div id="days-input-list">
+                        </div>
+                    
+                    <button type="submit" id="save-all-shifts-btn">Tüm Nöbetleri Kaydet</button>
+                </form>
+            </div>
+        </div>
+        
         <div id="edit-modal" class="modal">
             <div class="modal-content">
                 <span class="close-button">&times;</span>
@@ -46,11 +56,11 @@
                 <p id="edit-date-display"></p>
                 <form id="edit-form">
                     <div class="form-group">
-                        <label for="edit-hours">Yeni Çalışma Saati (Saat):</label>
-                        <input type="number" id="edit-hours" name="edit-hours" min="1" max="24" required>
+                        <label for="edit-hours">Çalışma Saati (Saat):</label>
+                        <input type="number" id="edit-hours" name="edit-hours" min="0" max="24" placeholder="0 = İzin/Boş Gün">
                     </div>
                     <button type="submit">Kaydet</button>
-                    <button type="button" id="delete-shift-btn" class="delete-btn">Sil</button>
+                    <button type="button" id="delete-shift-btn" class="delete-btn">SİL</button>
                 </form>
             </div>
         </div>
