@@ -1,5 +1,4 @@
 // Nöbet verilerini saklamak için bir obje (Tarih: Saat)
-// Veriler tarayıcının yerel depolama alanında saklanır.
 let shifts = JSON.parse(localStorage.getItem('shifts')) || {};
 
 // Geçerli Takvim Ayını tutar.
@@ -50,7 +49,7 @@ const generateDayInputs = (year, month) => {
     for (let day = 1; day <= daysInMonth; day++) {
         const fullDate = new Date(year, month, day);
         const dateKey = formatDate(fullDate);
-        const existingHours = shifts[dateKey] || 0; // Eğer saat daha önce girilmişse, değeri göster
+        const existingHours = shifts[dateKey] || 0;
 
         const dayInputGroup = document.createElement('div');
         dayInputGroup.classList.add('day-input-group');
@@ -150,6 +149,7 @@ const renderCalendar = (date) => {
 
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
+    // JS'te Pazar 0'dır, Pazartesi 1'dir. Türk takviminde Pazartesi ilk gün (indeks 0) olsun diye düzenlenir.
     const startDayIndex = (firstDay === 0 ? 6 : firstDay - 1); 
     
     // Ayın ilk gününe kadar boşlukları ekle
@@ -188,12 +188,12 @@ const renderCalendar = (date) => {
         } else { // Boş/İzin Günü (Saat yoksa)
             dayEl.classList.add('free-day');
             
-            // Emojiyi gün numarasına eklemek yerine, ayrı bir div olarak ekleyelim
+            // Gülen yüz emojisini ekle
             const emojiEl = document.createElement('div');
             emojiEl.textContent = '😊'; 
             dayEl.appendChild(emojiEl);
             
-            // Hızlı Ekleme/Düzenleme için tıklama
+            // Hızlı Ekleme/Düzenleme için tıklama (Saat 0 gönderilir)
             dayEl.addEventListener('click', () => openEditModal(dateKey, 0));
         }
         
@@ -230,7 +230,7 @@ document.getElementById('edit-form').addEventListener('submit', (e) => {
     if (newHours > 0) {
         shifts[currentEditingDate] = newHours;
     } else {
-        delete shifts[currentEditingDate]; // 0 girilirse sil (Boş Gün)
+        delete shifts[currentEditingDate]; // 0 girilirse sil (Boş Gün/İzin)
     }
 
     saveShifts();
@@ -255,11 +255,13 @@ document.getElementById('delete-shift-btn').addEventListener('click', () => {
 
 // Başlatma butonu
 document.getElementById('open-input-modal-btn').addEventListener('click', () => {
+    // Toplu giriş modalını mevcut ay ile aç
     openFullMonthInputModal(new Date());
 });
 
 // Takvimdeki toplu düzenleme butonu
 document.getElementById('reopen-input-modal-btn').addEventListener('click', () => {
+    // Toplu giriş modalını takvimde gösterilen ay ile aç
     openFullMonthInputModal(currentMonth);
 });
 
@@ -287,9 +289,9 @@ window.addEventListener('click', (event) => {
 
 // --- Uygulamayı Başlat ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Daha önce giriş yapılmış nöbet varsa, direkt takvimi göster
+    // Uygulama yüklendiğinde:
     if (Object.keys(shifts).length > 0) {
-        // En son girilen tarihi bul ve o aya git (daha iyi kullanıcı deneyimi için)
+        // Nöbet verisi varsa: Giriş ekranını gizle, takvimi göster.
         const lastDate = Object.keys(shifts).sort().pop();
         if (lastDate) {
             const [year, month] = lastDate.split('-').map(Number);
@@ -299,5 +301,9 @@ document.addEventListener('DOMContentLoaded', () => {
         startSection.classList.add('hidden');
         calendarView.classList.remove('hidden');
         renderCalendar(currentMonth);
+    } else {
+        // Nöbet verisi yoksa: Sadece başlangıç ekranını göster.
+        startSection.classList.remove('hidden');
+        calendarView.classList.add('hidden');
     }
 });
