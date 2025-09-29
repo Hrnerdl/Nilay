@@ -1,57 +1,62 @@
-<!-- index.html -->
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dünyanın en güzel hemşiresinin bu ayki çalışma saatleri</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nöbet Takip Uygulaması</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="topbar">
-<h1>Dünyanın en güzel hemşiresinin bu ayki çalışma saatleri</h1>
-<div class="controls">
-<button id="prevMonth" aria-label="Önceki ay">‹</button>
-<div id="monthLabel" class="month-label"></div>
-<button id="nextMonth" aria-label="Sonraki ay">›</button>
-<button id="addShiftBtn" class="primary">Nöbet Ekle</button>
-</div>
-</header>
 
+    <header>
+        <h1>Dünyanın en güzel hemşiresinin bu ayki çalışma saatleri</h1>
+    </header>
 
-<main class="calendar-wrap">
-<div class="weekdays">
-<div>Pzt</div><div>Sal</div><div>Çar</div><div>Per</div><div>Cum</div><div>Cmt</div><div>Paz</div>
-</div>
-<div id="calendar" class="calendar-grid" role="grid" aria-label="Nöbet takvimi"></div>
-</main>
+    <main>
+        
+        <section class="input-form">
+            <h2>Nöbet Girişi</h2>
+            <form id="shift-form">
+                <div class="form-group">
+                    <label for="shift-date">Tarih:</label>
+                    <input type="date" id="shift-date" name="shift-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="shift-hours">Çalışma Saati (Saat):</label>
+                    <input type="number" id="shift-hours" name="shift-hours" min="1" max="24" required>
+                </div>
+                <button type="submit" id="add-shift-btn">Nöbeti Ekle</button>
+            </form>
+        </section>
 
+        <section class="calendar-container">
+            <div class="calendar-header">
+                <button id="prev-month"> &lt; </button>
+                <h2 id="current-month-year"></h2>
+                <button id="next-month"> &gt; </button>
+            </div>
+            <div class="calendar" id="calendar">
+                </div>
+        </section>
 
-<!-- Modal / Form -->
-<div id="modal" class="modal" aria-hidden="true">
-<div class="modal-card" role="dialog" aria-modal="true">
-<button id="closeModal" class="close">×</button>
-<h2 id="modalTitle">Nöbet Ekle</h2>
-<form id="shiftForm">
-<label>Gün<input type="date" id="shiftDate" required></label>
-<label>Başlangıç saati<input type="time" id="shiftStart" required></label>
-<label>Bitiş saati<input type="time" id="shiftEnd" required></label>
-<label>Not (opsiyonel)<input type="text" id="shiftNote" placeholder="Ör: Gece nöbeti"></label>
-<input type="hidden" id="shiftId">
-<div class="form-actions">
-<button type="submit" class="primary">Kaydet</button>
-<button type="button" id="deleteShift" class="danger" style="display:none">Sil</button>
-</div>
-</form>
-</div>
-</div>
+        <div id="edit-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h3>Nöbeti Düzenle</h3>
+                <p id="edit-date-display"></p>
+                <form id="edit-form">
+                    <div class="form-group">
+                        <label for="edit-hours">Yeni Çalışma Saati (Saat):</label>
+                        <input type="number" id="edit-hours" name="edit-hours" min="1" max="24" required>
+                    </div>
+                    <button type="submit">Kaydet</button>
+                    <button type="button" id="delete-shift-btn" class="delete-btn">Sil</button>
+                </form>
+            </div>
+        </div>
 
+    </main>
 
-<footer class="footer">
-<small>Veriler tarayıcıda saklanır (localStorage). GitHub'a yükleyip doğrudan açabilirsiniz.</small>
-</footer>
-
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
