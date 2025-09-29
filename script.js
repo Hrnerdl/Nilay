@@ -1,134 +1,66 @@
-(() => {
-  const STORAGE_KEY = 'nobetShifts_v1';
+// Yeni buton
+const bulkBtn = document.createElement("button");
+bulkBtn.textContent = "Aylık Nöbet Girişi";
+bulkBtn.className = "primary";
+document.querySelector(".controls").appendChild(bulkBtn);
 
-  const calendarEl = document.getElementById('calendar');
-  const monthLabel = document.getElementById('monthLabel');
-  const addShiftBtn = document.getElementById('addShiftBtn');
+// Yeni modal
+const bulkModal = document.createElement("div");
+bulkModal.className = "modal";
+bulkModal.setAttribute("aria-hidden","true");
+bulkModal.innerHTML = `
+  <div class="modal-card">
+    <button class="close" id="closeBulk">×</button>
+    <h2>Aylık Nöbet Girişi</h2>
+    <form id="bulkForm">
+      <label>Ay (YYYY-AA)<input type="month" id="bulkMonth" required></label>
+      <label>Çalışma Günleri<input type="text" id="bulkDays" placeholder="ör: 1,2,5-10,15"></label>
+      <label>Başlangıç Saati<input type="time" id="bulkStart" required></label>
+      <label>Bitiş Saati<input type="time" id="bulkEnd" required></label>
+      <div class="form-actions">
+        <button type="submit" class="primary">Kaydet</button>
+      </div>
+    </form>
+  </div>`;
+document.body.appendChild(bulkModal);
 
-  const modal = document.getElementById('modal');
-  const closeModal = document.getElementById('closeModal');
-  const shiftForm = document.getElementById('shiftForm');
-  const shiftDate = document.getElementById('shiftDate');
-  const shiftStart = document.getElementById('shiftStart');
-  const shiftEnd = document.getElementById('shiftEnd');
-  const shiftNote = document.getElementById('shiftNote');
-  const shiftId = document.getElementById('shiftId');
-  const deleteBtn = document.getElementById('deleteShift');
+// Açma/kapama
+bulkBtn.addEventListener("click", ()=>bulkModal.setAttribute("aria-hidden","false"));
+document.getElementById("closeBulk").addEventListener("click", ()=>bulkModal.setAttribute("aria-hidden","true"));
 
-  let viewDate = new Date();
-  let shifts = loadShifts();
+// Toplu kayıt
+document.getElementById("bulkForm").addEventListener("submit",(e)=>{
+  e.preventDefault();
+  const month = document.getElementById("bulkMonth").value; // ör: 2025-09
+  const daysStr = document.getElementById("bulkDays").value;
+  const start = document.getElementById("bulkStart").value;
+  const end = document.getElementById("bulkEnd").value;
 
-  function loadShifts() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    } catch {
-      return [];
+  if(!month || !daysStr || !start || !end) return alert("Eksik bilgi girdiniz");
+
+  // Günleri parse et
+  let days = [];
+  daysStr.split(",").forEach(part=>{
+    if(part.includes("-")){
+      let [a,b] = part.split("-").map(n=>parseInt(n.trim()));
+      for(let i=a;i<=b;i++) days.push(i);
+    } else {
+      days.push(parseInt(part.trim()));
     }
-  }
-  function saveShifts() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(shifts));
-  }
+  });
 
-  function renderCalendar() {
-    calendarEl.innerHTML = '';
-    const start = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
-    const end = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0);
-
-    const monthName = viewDate.toLocaleString('tr-TR', { month: 'long', year: 'numeric' });
-    monthLabel.textContent = monthName;
-
-    let startWeekday = (start.getDay() + 6) % 7;
-    let totalCells = startWeekday + end.getDate();
-    let rows = Math.ceil(totalCells / 7);
-    let cells = rows * 7;
-
-    for (let i = 0; i < cells; i++) {
-      const cell = document.createElement('div');
-      cell.className = 'day';
-      const dayIndex = i - startWeekday + 1;
-
-      if (dayIndex < 1 || dayIndex > end.getDate()) {
-        cell.classList.add('dim');
-      } else {
-        const thisDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), dayIndex);
-        const iso = thisDate.toISOString().slice(0, 10);
-
-        cell.innerHTML = `<div class="date">${thisDate.getDate()}</div>
-                          <div class="shifts" data-date="${iso}"></div>`;
-
-        // Takvim hücresine tıklayınca modal aç
-        cell.addEventListener('click', () => {
-          openModalForDate(iso);
-        });
-      }
-      calendarEl.appendChild(cell);
-    }
-
-    // Kaydedilmiş nöbetleri ekrana bas
-    shifts.forEach(s => {
-      const cellShifts = calendarEl.querySelector(`.shifts[data-date="${s.date}"]`);
-      if (!cellShifts) return;
-      const pill = document.createElement('div');
-      pill.className = 'shift-pill';
-      pill.textContent = `${s.start}-${s.end} ${s.note || ''}`;
-      pill.addEventListener('click', (e) => {
-        e.stopPropagation();
-        openModalForEdit(s.id);
-      });
-      cellShifts.appendChild(pill);
+  days.forEach(d=>{
+    const date = `${month}-${String(d).padStart(2,"0")}`;
+    shifts.push({
+      id: Math.random().toString(36).slice(2),
+      date,
+      start,
+      end,
+      note: "Toplu giriş"
     });
-  }
-
-  function openModalForDate(date) {
-    shiftForm.reset();
-    shiftId.value = '';
-    shiftDate.value = date;
-    deleteBtn.style.display = 'none';
-    modal.style.display = 'flex';
-  }
-
-  function openModalForEdit(id) {
-    const s = shifts.find(x => x.id === id);
-    if (!s) return;
-    shiftId.value = s.id;
-    shiftDate.value = s.date;
-    shiftStart.value = s.start;
-    shiftEnd.value = s.end;
-    shiftNote.value = s.note || '';
-    deleteBtn.style.display = 'block';
-    modal.style.display = 'flex';
-  }
-
-  shiftForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const id = shiftId.value || Math.random().toString(36).substr(2, 9);
-    const newShift = {
-      id,
-      date: shiftDate.value,
-      start: shiftStart.value,
-      end: shiftEnd.value,
-      note: shiftNote.value
-    };
-    const index = shifts.findIndex(s => s.id === id);
-    if (index >= 0) shifts[index] = newShift;
-    else shifts.push(newShift);
-    saveShifts();
-    modal.style.display = 'none';
-    renderCalendar();
   });
 
-  deleteBtn.addEventListener('click', () => {
-    const id = shiftId.value;
-    shifts = shifts.filter(s => s.id !== id);
-    saveShifts();
-    modal.style.display = 'none';
-    renderCalendar();
-  });
-
-  closeModal.addEventListener('click', () => modal.style.display = 'none');
-  addShiftBtn.addEventListener('click', () => {
-    openModalForDate(new Date().toISOString().slice(0, 10));
-  });
-
+  saveShifts();
+  bulkModal.setAttribute("aria-hidden","true");
   renderCalendar();
-})();
+});
