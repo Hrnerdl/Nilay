@@ -1,4 +1,4 @@
-// Nöbet verilerini saklamak için bir obje (Tarih: Saat)
+// Nöbet verilerini saklamak için bir obje (Tarih: // Nöbet verilerini saklamak için bir obje (Tarih: Saat)
 let shifts = JSON.parse(localStorage.getItem('shifts')) || {};
 
 // Geçerli Takvim Ayını tutar.
@@ -149,7 +149,7 @@ document.getElementById('input-month').addEventListener('change', (e) => {
 });
 
 
-// --- Takvim Oluşturma Fonksiyonu (Değişiklik Yok) ---
+// --- Takvim Oluşturma Fonksiyonu (GÜNCELLENDİ) ---
 
 const renderCalendar = (date) => {
     calendarEl.innerHTML = '';
@@ -158,7 +158,8 @@ const renderCalendar = (date) => {
 
     currentMonthYearEl.textContent = `${monthNames[month]} ${year}`;
 
-    const dayNames = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"];
+    // Yeni gün isimleri sırası: Pzt, Sal, Çar, Per, Cum, Cmt, Paz
+    const dayNames = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
     dayNames.forEach(day => {
         const header = document.createElement('div');
         header.classList.add('calendar-day-header');
@@ -168,8 +169,16 @@ const renderCalendar = (date) => {
 
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const startDayIndex = (firstDay === 0 ? 6 : firstDay - 1); 
     
+    // Haftanın başlangıcı Pazartesi (1) olmalı.
+    // getDay() Pazar (0) ile başlar.
+    // Pazar (0) -> 6 boşluk (son gün)
+    // Pazartesi (1) -> 0 boşluk (ilk gün)
+    // Salı (2) -> 1 boşluk
+    // ...
+    // Cumartesi (6) -> 5 boşluk
+    const startDayIndex = (firstDay === 0) ? 6 : firstDay - 1; // Pazar=0, Pzt=1... Cmt=6 -> 6 boşluk, 0 boşluk... 5 boşluk
+
     for (let i = 0; i < startDayIndex; i++) {
         const emptyDay = document.createElement('div');
         emptyDay.classList.add('empty-day');
@@ -323,3 +332,4 @@ document.addEventListener('DOMContentLoaded', () => {
         calendarView.classList.add('hidden');
     }
 });
+
