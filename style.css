@@ -183,24 +183,23 @@ button:hover {
     margin-bottom: 5px;
 }
 
-/* --- NÖBET SAATİNE GÖRE RENKLER (CANLI VE GÖLGELİ) --- */
+/* --- NÖBET SAATİNE GÖRE RENKLER --- */
 .shift-8 {
-    background-color: #3498db; /* Mavi - 8 Saat */
+    background-color: #3498db; 
     box-shadow: 0 2px 4px rgba(52, 152, 219, 0.4);
 }
 
 .shift-16 {
-    background-color: #f39c12; /* Turuncu - 16 Saat */
+    background-color: #f39c12; 
     box-shadow: 0 2px 4px rgba(243, 156, 18, 0.4);
 }
 
 .shift-24 {
-    background-color: #9b59b6; /* Mor - 24 Saat */
+    background-color: #9b59b6; 
     box-shadow: 0 2px 4px rgba(155, 89, 182, 0.4);
 }
-/* Diğer saatler için varsayılan renk */
 .shift-day .shift-info:not(.shift-8):not(.shift-16):not(.shift-24) {
-    background-color: #ff2d55; /* iOS Pembe/Kırmızı */
+    background-color: #ff2d55; 
     box-shadow: 0 2px 4px rgba(255, 45, 85, 0.4);
 }
 
@@ -210,39 +209,38 @@ button:hover {
     background-color: #fff0f0; 
 }
 
-/* Boş Gün (Gülen Yüz) */
+/* Boş Gün Düzeltmesi */
 .calendar-day.free-day {
-    background-color: #f0fff0; /* Açık yeşil arka plan */
-    font-size: 2.5em; /* Daha büyük emoji */
-    justify-content: center; 
-    align-items: center; 
-    color: #34c759; /* iOS Yeşil */
+    background-color: #f0fff0; 
+    align-items: flex-start; 
     padding: 0;
 }
 
+.free-day-emoji { 
+    font-size: 1.5em; 
+    margin-top: auto; 
+    margin-bottom: 5px; 
+    color: #34c759; 
+    font-weight: bold;
+}
+
 .calendar-day.free-day .day-number {
-    position: absolute;
-    top: 0;
-    left: 0;
-    font-size: 0.9em;
-    color: #333;
+    position: static; 
     z-index: 1;
 }
 
 
-/* --- Modal Stilleri (iOS Pop-up Benzeri) --- */
+/* --- Modal Stilleri --- */
 .modal {
     display: none; 
     position: fixed;
-    z-index: 100; /* Her şeyin üstünde */
+    z-index: 100; 
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.6); /* Daha koyu blur efekti */
-    
-    /* iOS modal geçişine benzer, alttan açılma efekti için */
+    background-color: rgba(0,0,0,0.6); 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -252,7 +250,6 @@ button:hover {
     transition: visibility 0.2s, opacity 0.2s;
 }
 
-/* Modal Açıkken */
 .modal[style*="block"] {
     visibility: visible;
     opacity: 1;
@@ -260,11 +257,11 @@ button:hover {
 
 .modal-content {
     background-color: #fefefe;
-    margin: 0; /* Ortaya hizalama için margin 0 */
+    margin: 0; 
     padding: 20px;
     width: 90%; 
     max-width: 400px;
-    border-radius: 14px; /* Yuvarlak iOS modal köşeleri */
+    border-radius: 14px; 
     position: relative;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
@@ -274,11 +271,37 @@ button:hover {
 }
 
 .close-button {
-    color: #8e8e93; /* Soluk gri */
+    color: #8e8e93; 
     float: right;
     font-size: 30px;
-    font-weight: 300; /* Daha ince 'X' */
+    font-weight: 300; 
 }
+
+/* --- Select Menü Stilleri (YENİ) --- */
+.form-group select, 
+.month-selector input[type="month"] {
+    /* iOS form elemanı görünümü */
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    appearance: none; /* Varsayılan stil okunu kaldır */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="gray" d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 30px;
+}
+
+/* Toplu Giriş Modalındaki Select'ler */
+.day-input-group select {
+    width: 120px; /* Daha dar bir genişlik veriyoruz */
+    text-align: center;
+    font-size: 0.9em;
+}
+
 
 /* --- Toplu Giriş Modal Stilleri --- */
 #days-input-list {
@@ -294,24 +317,20 @@ button:hover {
     padding: 10px;
     background-color: #ffffff;
     border-radius: 8px;
-    border: 1px solid #e0e0e0; /* Hafif çizgi */
+    border: 1px solid #e0e0e0; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .day-input-group label {
     font-size: 0.95em;
+    flex-grow: 1;
 }
 
-.day-input-group input[type="number"], 
-.month-selector input[type="month"] {
-    width: 60px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background-color: #f9f9f9;
-}
 
 .edit-all-btn {
-    background-color: #5856d6; /* iOS Moru */
+    background-color: #5856d6; 
     box-shadow: 0 3px 6px rgba(88, 86, 214, 0.3);
 }
 
@@ -328,7 +347,7 @@ button:hover {
         padding: 15px 10px;
     }
     .calendar-container {
-        border-radius: 0; /* Mobil tam ekran kaplama */
+        border-radius: 0; 
         box-shadow: none;
         padding: 10px 5px;
     }
@@ -337,5 +356,8 @@ button:hover {
     }
     #days-input-list {
         grid-template-columns: 1fr;
+    }
+    .day-input-group select {
+        width: 150px; /* Mobil genişletme */
     }
 }
