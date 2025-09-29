@@ -17,15 +17,21 @@ const editModal = document.getElementById('edit-modal');
 // Ay isimleri
 const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
                     "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+                    
+// Sabit Nöbet Seçenekleri
+const SHIFT_OPTIONS = [
+    { value: 0, label: "0 Saat (Boş/İzin)" },
+    { value: 8, label: "8 Saat" },
+    { value: 16, label: "16 Saat" },
+    { value: 24, label: "24 Saat" }
+];
 
 // --- Helper Fonksiyonlar ---
 
-// Verileri Local Storage'a kaydetme
 const saveShifts = () => {
     localStorage.setItem('shifts', JSON.stringify(shifts));
 };
 
-// Tarih objesini YYYY-MM-DD formatına çevirme
 const formatDate = (date) => {
     const d = new Date(date);
     let month = '' + (d.getMonth() + 1);
@@ -38,10 +44,17 @@ const formatDate = (date) => {
     return [year, month, day].join('-');
 };
 
+const getShiftColorClass = (hours) => {
+    if (hours === 8) return 'shift-8';
+    if (hours === 16) return 'shift-16';
+    if (hours === 24) return 'shift-24';
+    return ''; 
+};
 
-// --- Aylık Giriş Modalı Yönetimi ve İşlemleri ---
 
-// Toplu Giriş Modalındaki Gün Inputlarını Oluşturma
+// --- Aylık Giriş Modalı Yönetimi ve İşlemleri (GÜNCELLENDİ) ---
+
+// Toplu Giriş Modalındaki Gün Inputlarını Oluşturma (SELECT KULLANIMI)
 const generateDayInputs = (year, month) => {
     daysInputList.innerHTML = '';
     const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -56,24 +69,30 @@ const generateDayInputs = (year, month) => {
         
         const dayName = fullDate.toLocaleDateString('tr-TR', { weekday: 'short' });
         
+        // SELECT elementini oluştur
+        let selectHtml = `<select id="${dateKey}" name="${dateKey}">`;
+        
+        SHIFT_OPTIONS.forEach(option => {
+            const selected = (option.value === existingHours) ? 'selected' : '';
+            selectHtml += `<option value="${option.value}" ${selected}>${option.label}</option>`;
+        });
+        
+        selectHtml += `</select>`;
+
         dayInputGroup.innerHTML = `
             <label for="${dateKey}">
                 ${day}. ${monthNames[month].substring(0, 3)} (${dayName})
             </label>
-            <input type="number" id="${dateKey}" name="${dateKey}" 
-                   min="0" max="24" value="${existingHours}" 
-                   placeholder="Saat (0=Boş)">
+            ${selectHtml}
         `;
         daysInputList.appendChild(dayInputGroup);
     }
 };
 
-// Toplu Giriş Modalını Aç
 const openFullMonthInputModal = (date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
 
-    // Input'a YYYY-MM formatını set et
     const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
     document.getElementById('input-month').value = monthKey;
     document.getElementById('modal-month-name').textContent = monthNames[month];
@@ -82,7 +101,7 @@ const openFullMonthInputModal = (date) => {
     fullMonthInputModal.style.display = 'block';
 };
 
-// Toplu Giriş Formu Submit Olayı (Kaydetme)
+// Toplu Giriş Formu Submit Olayı (SELECT VERİLERİNİ OKUMA)
 fullMonthShiftForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
@@ -93,14 +112,16 @@ fullMonthShiftForm.addEventListener('submit', (e) => {
     
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     
-    // Tüm günlerin inputlarını kontrol et ve shifts objesini güncelle
+    // Tüm günlerin SELECT elementlerini kontrol et
     for (let day = 1; day <= daysInMonth; day++) {
         const fullDate = new Date(year, month, day);
         const dateKey = formatDate(fullDate);
-        const hoursInput = document.getElementById(dateKey);
+        // Artık input değil, select okuyoruz
+        const hoursSelect = document.getElementById(dateKey); 
         
-        if (hoursInput) {
-            const hours = parseInt(hoursInput.value);
+        if (hoursSelect) {
+            // Değeri string olarak alır, parseInt ile sayıya çeviririz
+            const hours = parseInt(hoursSelect.value); 
             
             if (hours > 0) {
                 shifts[dateKey] = hours; 
@@ -113,16 +134,13 @@ fullMonthShiftForm.addEventListener('submit', (e) => {
     saveShifts();
     fullMonthInputModal.style.display = 'none';
     
-    // Takvimi yeni girilen ay ile göster
     currentMonth = new Date(year, month, 1);
     renderCalendar(currentMonth);
     
-    // Takvim görünümünü aktif et
     startSection.classList.add('hidden');
     calendarView.classList.remove('hidden');
 });
 
-// Ay seçimi değiştiğinde gün inputlarını güncelle
 document.getElementById('input-month').addEventListener('change', (e) => {
     const [year, month] = e.target.value.split('-').map(Number);
     const date = new Date(year, month - 1, 1);
@@ -130,7 +148,8 @@ document.getElementById('input-month').addEventListener('change', (e) => {
     generateDayInputs(date.getFullYear(), date.getMonth());
 });
 
-// --- Takvim Oluşturma Fonksiyonu ---
+
+// --- Takvim Oluşturma Fonksiyonu (Değişiklik Yok) ---
 
 const renderCalendar = (date) => {
     calendarEl.innerHTML = '';
@@ -149,21 +168,18 @@ const renderCalendar = (date) => {
 
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    // JS'te Pazar 0'dır, Pazartesi 1'dir. Türk takviminde Pazartesi ilk gün (indeks 0) olsun diye düzenlenir.
     const startDayIndex = (firstDay === 0 ? 6 : firstDay - 1); 
     
-    // Ayın ilk gününe kadar boşlukları ekle
     for (let i = 0; i < startDayIndex; i++) {
         const emptyDay = document.createElement('div');
         emptyDay.classList.add('empty-day');
         calendarEl.appendChild(emptyDay);
     }
 
-    // Günleri oluştur
     for (let day = 1; day <= daysInMonth; day++) {
         const fullDate = new Date(year, month, day);
         const dateKey = formatDate(fullDate);
-        const hours = shifts[dateKey]; // Nöbet saati veya undefined
+        const hours = shifts[dateKey]; 
 
         const dayEl = document.createElement('div');
         dayEl.classList.add('calendar-day');
@@ -174,26 +190,30 @@ const renderCalendar = (date) => {
         dayNumberEl.textContent = day;
         dayEl.appendChild(dayNumberEl);
 
-        if (hours) { // Nöbet Günü (Saat varsa)
+        if (hours) { // Nöbet Günü
             dayEl.classList.add('shift-day');
             
             const shiftInfoEl = document.createElement('div');
             shiftInfoEl.classList.add('shift-info');
+            
+            const colorClass = getShiftColorClass(hours);
+            if (colorClass) {
+                shiftInfoEl.classList.add(colorClass); 
+            }
+            
             shiftInfoEl.textContent = `${hours} Saat`;
             dayEl.appendChild(shiftInfoEl);
             
-            // Düzenleme/Silme için tıklama
             dayEl.addEventListener('click', () => openEditModal(dateKey, hours));
 
-        } else { // Boş/İzin Günü (Saat yoksa)
+        } else { // Boş/İzin Günü
             dayEl.classList.add('free-day');
             
-            // Gülen yüz emojisini ekle
             const emojiEl = document.createElement('div');
             emojiEl.textContent = '😊'; 
+            emojiEl.classList.add('free-day-emoji');
             dayEl.appendChild(emojiEl);
             
-            // Hızlı Ekleme/Düzenleme için tıklama (Saat 0 gönderilir)
             dayEl.addEventListener('click', () => openEditModal(dateKey, 0));
         }
         
@@ -201,17 +221,21 @@ const renderCalendar = (date) => {
     }
 };
 
-// --- Tek Gün Düzenleme Modalı Fonksiyonları ---
+// --- Tek Gün Düzenleme Modalı Fonksiyonları (GÜNCELLENDİ) ---
 
 let currentEditingDate = null; 
 
+// openEditModal (SELECT DEĞERİNİ AYARLAMA)
 const openEditModal = (dateKey, hours) => {
     currentEditingDate = dateKey;
     const dateParts = dateKey.split('-');
     const formattedDate = `${dateParts[2]}.${dateParts[1]}.${dateParts[0]}`; 
 
     document.getElementById('edit-date-display').textContent = `${formattedDate} tarihindeki nöbeti düzenle`;
+    
+    // Select elementinin değerini (hours) ayarlıyoruz
     document.getElementById('edit-hours').value = hours;
+    
     editModal.style.display = 'block';
 };
 
@@ -220,17 +244,18 @@ const closeEditModal = () => {
     currentEditingDate = null;
 };
 
-// Tek Gün Kaydetme Formu
+// Tek Gün Kaydetme Formu (SELECT VERİSİNİ OKUMA)
 document.getElementById('edit-form').addEventListener('submit', (e) => {
     e.preventDefault();
     if (!currentEditingDate) return;
 
+    // Select'ten gelen değeri okuyoruz
     const newHours = parseInt(document.getElementById('edit-hours').value);
     
     if (newHours > 0) {
         shifts[currentEditingDate] = newHours;
     } else {
-        delete shifts[currentEditingDate]; // 0 girilirse sil (Boş Gün/İzin)
+        delete shifts[currentEditingDate]; 
     }
 
     saveShifts();
@@ -238,7 +263,7 @@ document.getElementById('edit-form').addEventListener('submit', (e) => {
     closeEditModal();
 });
 
-// Tek Gün Silme Butonu
+// Tek Gün Silme Butonu (Değişiklik Yok)
 document.getElementById('delete-shift-btn').addEventListener('click', () => {
     if (!currentEditingDate) return;
 
@@ -251,21 +276,16 @@ document.getElementById('delete-shift-btn').addEventListener('click', () => {
 });
 
 
-// --- Olay Dinleyicileri (Başlatma ve Navigasyon) ---
+// --- Olay Dinleyicileri (Başlatma ve Navigasyon) (Değişiklik Yok) ---
 
-// Başlatma butonu
 document.getElementById('open-input-modal-btn').addEventListener('click', () => {
-    // Toplu giriş modalını mevcut ay ile aç
     openFullMonthInputModal(new Date());
 });
 
-// Takvimdeki toplu düzenleme butonu
 document.getElementById('reopen-input-modal-btn').addEventListener('click', () => {
-    // Toplu giriş modalını takvimde gösterilen ay ile aç
     openFullMonthInputModal(currentMonth);
 });
 
-// Ay Değiştirme Butonları
 document.getElementById('prev-month').addEventListener('click', () => {
     currentMonth.setMonth(currentMonth.getMonth() - 1);
     renderCalendar(currentMonth);
@@ -276,7 +296,6 @@ document.getElementById('next-month').addEventListener('click', () => {
     renderCalendar(currentMonth);
 });
 
-// Modal Kapatma Tuşları
 document.querySelector('.full-month-close-btn').addEventListener('click', () => fullMonthInputModal.style.display = 'none');
 document.querySelector('.edit-close-btn').addEventListener('click', closeEditModal);
 window.addEventListener('click', (event) => {
@@ -287,11 +306,9 @@ window.addEventListener('click', (event) => {
     }
 });
 
-// --- Uygulamayı Başlat ---
+// --- Uygulamayı Başlat (Değişiklik Yok) ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Uygulama yüklendiğinde:
     if (Object.keys(shifts).length > 0) {
-        // Nöbet verisi varsa: Giriş ekranını gizle, takvimi göster.
         const lastDate = Object.keys(shifts).sort().pop();
         if (lastDate) {
             const [year, month] = lastDate.split('-').map(Number);
@@ -302,7 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
         calendarView.classList.remove('hidden');
         renderCalendar(currentMonth);
     } else {
-        // Nöbet verisi yoksa: Sadece başlangıç ekranını göster.
         startSection.classList.remove('hidden');
         calendarView.classList.add('hidden');
     }
