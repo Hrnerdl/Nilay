@@ -1,6 +1,37 @@
-/* --- index.html'den gelen eski kodlar burada kalmalı --- */
+/* Genel Ayarlar ve Font */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f9;
+    color: #333;
+    line-height: 1.6;
+}
 
-/* Yeni Yapı Stilleri */
+header {
+    background-color: #e74c3c; /* Hemşirelikle ilişkilendirilebilecek bir renk */
+    color: white;
+    padding: 20px 10px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.8em;
+}
+
+main {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 10px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- Giriş Başlatma Ekranı Stili --- */
 .start-section {
     text-align: center;
     margin: 50px auto;
@@ -16,33 +47,198 @@
     color: #333;
 }
 
-.start-section button {
-    background-color: #2ecc71;
-    padding: 15px 25px;
-    font-size: 1.1em;
+/* --- Genel Buton Stili --- */
+button {
+    background-color: #2ecc71; /* Ekleme butonu için yeşil */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
 }
 
-.hidden {
-    display: none !important;
+button:hover {
+    background-color: #27ae60;
 }
 
-/* Büyük Modal (Aylık Giriş için) */
+.delete-btn {
+    background-color: #95a5a6; 
+    margin-left: 10px;
+}
+
+.delete-btn:hover {
+    background-color: #7f8c8d;
+}
+
+/* --- Takvim Bölümü Stilleri --- */
+.calendar-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.calendar-header button {
+    background: none;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    padding: 5px 10px;
+    font-size: 1.2em;
+}
+
+/* Takvim Grid Yapısı */
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); 
+    gap: 5px;
+}
+
+.calendar-day-header, .calendar-day {
+    padding: 10px 5px;
+    text-align: center;
+    border-radius: 4px;
+}
+
+.calendar-day-header {
+    background-color: #bdc3c7;
+    font-weight: bold;
+    color: #444;
+}
+
+.calendar-day {
+    background-color: #ecf0f1;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    min-height: 80px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    border: 1px solid #ddd;
+}
+
+.calendar-day:hover:not(.empty-day) {
+    background-color: #dce0e3;
+}
+
+.empty-day {
+    background-color: transparent;
+    border: none;
+    cursor: default;
+}
+
+.day-number {
+    font-weight: bold;
+    font-size: 1.2em;
+    align-self: flex-start; 
+    padding: 5px;
+}
+
+/* Nöbet Bilgisi */
+.shift-info {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: white;
+    background-color: #e74c3c; 
+    padding: 3px 5px;
+    border-radius: 3px;
+    margin-top: auto; 
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Nöbet Günü */
+.calendar-day.shift-day {
+    background-color: #fbe6e6; 
+}
+
+/* Boş Gün (Gülen Yüz) */
+.calendar-day.free-day {
+    background-color: #e6ffe6; /* Açık yeşil arka plan */
+    font-size: 2em; /* Emoji büyük olsun */
+    justify-content: center; 
+    align-items: center; 
+    color: #2ecc71;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0;
+}
+
+.calendar-day.free-day .day-number {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 0.8em;
+    color: #333;
+    z-index: 1;
+}
+
+
+/* --- Modal Stilleri (Toplu ve Tekli) --- */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 10; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); 
+    padding-top: 20px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%; 
+    max-width: 400px;
+    border-radius: 8px;
+    position: relative;
+}
+
 .large-modal {
-    max-width: 650px; /* Daha geniş */
-    width: 90%;
+    max-width: 650px; /* Toplu giriş için daha geniş */
 }
 
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* --- Toplu Giriş Modal Stilleri --- */
 .month-selector {
     text-align: center;
     margin-bottom: 20px;
 }
 
-/* Gün Giriş Listesi */
 #days-input-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Duyarlı sütunlar */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
     gap: 15px;
-    max-height: 400px; /* Kaydırma çubuğu için */
+    max-height: 400px; 
     overflow-y: auto;
     padding-right: 10px;
 }
@@ -68,22 +264,10 @@
     width: 70px;
     text-align: center;
     padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
-/* Takvimdeki Boş Gün (Emoji) Stili */
-.calendar-day.free-day {
-    background-color: #e6ffe6; /* Açık yeşil arka plan */
-    font-size: 2em; /* Emoji büyük olsun */
-    justify-content: center; /* Ortaya hizala */
-    align-items: center; /* Ortaya hizala */
-    color: #2ecc71;
-}
-
-.calendar-day.shift-day {
-    background-color: #fbe6e6; /* Nöbet günü arka planı */
-}
-
-/* Düzenleme Butonu (Tüm Ayı Düzenle) */
 .edit-all-btn {
     display: block;
     width: 100%;
@@ -95,9 +279,21 @@
     background-color: #2980b9;
 }
 
-/* Küçük Ekranlarda Formu Dikey Tut */
+/* --- Medya Sorguları (Telefon Uyumluluğu) --- */
 @media (max-width: 768px) {
+    h1 {
+        font-size: 1.5em;
+    }
+    .modal-content {
+        margin: 10% auto;
+    }
+    .large-modal {
+        max-width: 95%;
+    }
     #days-input-list {
         grid-template-columns: 1fr;
+    }
+    .calendar-day {
+        min-height: 60px;
     }
 }
