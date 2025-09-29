@@ -9,7 +9,7 @@ body {
 }
 
 header {
-    background-color: #e74c3c; /* Hemşirelikle ilişkilendirilebilecek bir renk */
+    background-color: #e74c3c; /* Kırmızı */
     color: white;
     padding: 20px 10px;
     text-align: center;
@@ -27,6 +27,7 @@ main {
     padding: 0 10px;
 }
 
+/* Gizleme Sınıfı */
 .hidden {
     display: none !important;
 }
@@ -47,9 +48,9 @@ main {
     color: #333;
 }
 
-/* --- Genel Buton Stili --- */
+/* --- Genel Buton ve Input Stili --- */
 button {
-    background-color: #2ecc71; /* Ekleme butonu için yeşil */
+    background-color: #2ecc71; /* Yeşil */
     color: white;
     padding: 10px 15px;
     border: none;
@@ -65,7 +66,7 @@ button:hover {
 }
 
 .delete-btn {
-    background-color: #95a5a6; 
+    background-color: #95a5a6; /* Gri */
     margin-left: 10px;
 }
 
@@ -103,22 +104,18 @@ button:hover {
     gap: 5px;
 }
 
-.calendar-day-header, .calendar-day {
+.calendar-day-header {
     padding: 10px 5px;
     text-align: center;
-    border-radius: 4px;
-}
-
-.calendar-day-header {
     background-color: #bdc3c7;
     font-weight: bold;
     color: #444;
+    border-radius: 4px;
 }
 
 .calendar-day {
     background-color: #ecf0f1;
     cursor: pointer;
-    transition: background-color 0.2s;
     min-height: 80px; 
     display: flex;
     flex-direction: column;
@@ -126,6 +123,8 @@ button:hover {
     align-items: center;
     position: relative;
     border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: background-color 0.2s;
 }
 
 .calendar-day:hover:not(.empty-day) {
@@ -160,18 +159,17 @@ button:hover {
 
 /* Nöbet Günü */
 .calendar-day.shift-day {
-    background-color: #fbe6e6; 
+    background-color: #fbe6e6; /* Açık Kırmızı/Pembe */
 }
 
 /* Boş Gün (Gülen Yüz) */
 .calendar-day.free-day {
     background-color: #e6ffe6; /* Açık yeşil arka plan */
-    font-size: 2em; /* Emoji büyük olsun */
+    font-size: 2em; 
     justify-content: center; 
     align-items: center; 
     color: #2ecc71;
     cursor: pointer;
-    font-weight: bold;
     padding: 0;
 }
 
@@ -185,7 +183,7 @@ button:hover {
 }
 
 
-/* --- Modal Stilleri (Toplu ve Tekli) --- */
+/* --- Modal Stilleri --- */
 .modal {
     display: none; 
     position: fixed;
@@ -211,7 +209,7 @@ button:hover {
 }
 
 .large-modal {
-    max-width: 650px; /* Toplu giriş için daha geniş */
+    max-width: 650px; 
 }
 
 .close-button {
@@ -260,7 +258,8 @@ button:hover {
     flex-grow: 1;
 }
 
-.day-input-group input[type="number"] {
+.day-input-group input[type="number"], 
+.month-selector input[type="month"] {
     width: 70px;
     text-align: center;
     padding: 5px;
@@ -269,10 +268,10 @@ button:hover {
 }
 
 .edit-all-btn {
+    background-color: #3498db;
     display: block;
     width: 100%;
     margin-top: 20px;
-    background-color: #3498db;
 }
 
 .edit-all-btn:hover {
