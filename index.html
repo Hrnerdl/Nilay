@@ -9,7 +9,7 @@
 <body>
 
     <header>
-        <h1>Dünyanın En Güzel Hemşiresinin Çalışma Saatleri</h1>
+        <h1>Dünyanın en güzel hemşiresinin bu ayki çalışma saatleri</h1>
     </header>
 
     <main>
@@ -25,8 +25,13 @@
                 <h2 id="current-month-year"></h2>
                 <button id="next-month"> &gt; </button>
             </div>
+            
+            <div id="summary-panel" class="summary-panel">
+                </div>
+
             <div class="calendar" id="calendar">
                 </div>
+            
             <button id="reopen-input-modal-btn" class="edit-all-btn">Tüm Ayı Toplu Düzenle</button>
         </section>
 
@@ -38,7 +43,7 @@
                 <form id="full-month-shift-form">
                     <div class="form-group month-selector">
                         <label for="input-month">Giriş Yapılacak Ay:</label>
-                        <input type="month" id="input-month" required>
+                        <input type="month" id="input-month" required> 
                     </div>
 
                     <div id="days-input-list"></div>
@@ -74,4 +79,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
