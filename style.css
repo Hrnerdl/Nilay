@@ -1,24 +1,30 @@
-/* Genel Ayarlar ve Font */
+/* Genel Ayarlar ve Font (iOS'a yakın bir görünüm) */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* iOS varsayılan fontuna benzer bir font ailesi */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     margin: 0;
     padding: 0;
-    background-color: #f4f7f9;
+    background-color: #f8f8f8; /* Çok açık gri arkaplan */
     color: #333;
-    line-height: 1.6;
+    line-height: 1.4;
 }
 
 header {
-    background-color: #e74c3c; /* Kırmızı */
-    color: white;
+    /* iOS benzeri hafif bir blur/gölge efekti */
+    background-color: #ffffff; 
+    color: #333;
     padding: 20px 10px;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.5px 0 rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05); /* Yumuşak gölge */
+    position: sticky;
+    top: 0;
+    z-index: 5;
 }
 
 h1 {
     margin: 0;
-    font-size: 1.8em;
+    font-size: 1.6em;
+    font-weight: 600; /* Daha ince, iOS tarzı başlık */
 }
 
 main {
@@ -27,7 +33,6 @@ main {
     padding: 0 10px;
 }
 
-/* Gizleme Sınıfı */
 .hidden {
     display: none !important;
 }
@@ -35,51 +40,54 @@ main {
 /* --- Giriş Başlatma Ekranı Stili --- */
 .start-section {
     text-align: center;
-    margin: 50px auto;
+    margin: 40vh auto 0; /* Sayfanın ortasına yakın başlama */
     padding: 30px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
+    background-color: transparent; /* Şeffaf arkaplan */
+    max-width: 300px;
 }
 
 .start-section p {
-    font-size: 1.2em;
-    color: #333;
+    font-size: 1.1em;
+    color: #666;
 }
 
-/* --- Genel Buton ve Input Stili --- */
+/* --- Genel Buton Stili (iOS Action Benzeri) --- */
 button {
-    background-color: #2ecc71; /* Yeşil */
+    background-color: #007aff; /* iOS Mavi Rengi */
     color: white;
-    padding: 10px 15px;
+    padding: 12px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 10px; /* Daha yuvarlak köşeler */
     cursor: pointer;
     font-size: 1em;
-    transition: background-color 0.3s ease;
-    margin-top: 10px;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    margin-top: 15px;
+    box-shadow: 0 3px 6px rgba(0, 122, 255, 0.3); /* Mavi gölge */
+    width: 100%; /* Mobil tam genişlik */
 }
 
 button:hover {
-    background-color: #27ae60;
+    background-color: #006ee6;
+    transform: translateY(-1px);
 }
 
 .delete-btn {
-    background-color: #95a5a6; /* Gri */
-    margin-left: 10px;
+    background-color: #ff3b30; /* iOS Kırmızı Rengi */
+    margin-left: 0; /* Mobil düzende yan yana olmasın */
+    margin-top: 10px;
 }
 
 .delete-btn:hover {
-    background-color: #7f8c8d;
+    background-color: #e6342c;
 }
 
-/* --- Takvim Bölümü Stilleri --- */
+/* --- Takvim Bölümü Stilleri (Kart Görünümü) --- */
 .calendar-container {
     background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 15px;
+    border-radius: 12px; /* Yumuşak kart köşeleri */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Belirgin kart gölgesi */
 }
 
 .calendar-header {
@@ -87,48 +95,65 @@ button:hover {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
+    padding: 0 5px;
+}
+
+.calendar-header h2 {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: #333;
 }
 
 .calendar-header button {
     background: none;
-    color: #e74c3c;
-    border: 1px solid #e74c3c;
-    padding: 5px 10px;
-    font-size: 1.2em;
+    color: #007aff; 
+    border: none;
+    padding: 8px 10px;
+    font-size: 1.5em;
+    font-weight: 300;
+    border-radius: 8px;
+    box-shadow: none;
+    width: auto;
+}
+.calendar-header button:active {
+    background-color: rgba(0, 122, 255, 0.1);
 }
 
 /* Takvim Grid Yapısı */
 .calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr); 
-    gap: 5px;
+    gap: 3px;
+}
+
+.calendar-day-header, .calendar-day {
+    padding: 8px 3px;
+    text-align: center;
+    border-radius: 6px;
 }
 
 .calendar-day-header {
-    padding: 10px 5px;
-    text-align: center;
-    background-color: #bdc3c7;
-    font-weight: bold;
-    color: #444;
-    border-radius: 4px;
+    background-color: transparent; 
+    font-weight: 500;
+    color: #666;
+    font-size: 0.9em;
 }
 
 .calendar-day {
-    background-color: #ecf0f1;
+    background-color: #f9f9f9;
     cursor: pointer;
-    min-height: 80px; 
+    min-height: 85px; 
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     position: relative;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border: 1px solid #eee;
     transition: background-color 0.2s;
 }
 
-.calendar-day:hover:not(.empty-day) {
-    background-color: #dce0e3;
+.calendar-day:active:not(.empty-day) {
+    background-color: #e0e0e0;
 }
 
 .empty-day {
@@ -138,38 +163,60 @@ button:hover {
 }
 
 .day-number {
-    font-weight: bold;
-    font-size: 1.2em;
+    font-weight: 700;
+    font-size: 1.1em;
     align-self: flex-start; 
     padding: 5px;
+    color: #333;
 }
 
 /* Nöbet Bilgisi */
 .shift-info {
-    font-size: 0.9em;
-    font-weight: bold;
+    font-size: 0.8em;
+    font-weight: 700;
     color: white;
-    background-color: #e74c3c; 
-    padding: 3px 5px;
-    border-radius: 3px;
+    padding: 4px 6px;
+    border-radius: 6px;
     margin-top: auto; 
-    width: 100%;
+    width: 90%;
     box-sizing: border-box;
+    margin-bottom: 5px;
 }
 
-/* Nöbet Günü */
+/* --- NÖBET SAATİNE GÖRE RENKLER (CANLI VE GÖLGELİ) --- */
+.shift-8 {
+    background-color: #3498db; /* Mavi - 8 Saat */
+    box-shadow: 0 2px 4px rgba(52, 152, 219, 0.4);
+}
+
+.shift-16 {
+    background-color: #f39c12; /* Turuncu - 16 Saat */
+    box-shadow: 0 2px 4px rgba(243, 156, 18, 0.4);
+}
+
+.shift-24 {
+    background-color: #9b59b6; /* Mor - 24 Saat */
+    box-shadow: 0 2px 4px rgba(155, 89, 182, 0.4);
+}
+/* Diğer saatler için varsayılan renk */
+.shift-day .shift-info:not(.shift-8):not(.shift-16):not(.shift-24) {
+    background-color: #ff2d55; /* iOS Pembe/Kırmızı */
+    box-shadow: 0 2px 4px rgba(255, 45, 85, 0.4);
+}
+
+
+/* Nöbet Günü Arka Planı */
 .calendar-day.shift-day {
-    background-color: #fbe6e6; /* Açık Kırmızı/Pembe */
+    background-color: #fff0f0; 
 }
 
 /* Boş Gün (Gülen Yüz) */
 .calendar-day.free-day {
-    background-color: #e6ffe6; /* Açık yeşil arka plan */
-    font-size: 2em; 
+    background-color: #f0fff0; /* Açık yeşil arka plan */
+    font-size: 2.5em; /* Daha büyük emoji */
     justify-content: center; 
     align-items: center; 
-    color: #2ecc71;
-    cursor: pointer;
+    color: #34c759; /* iOS Yeşil */
     padding: 0;
 }
 
@@ -177,122 +224,118 @@ button:hover {
     position: absolute;
     top: 0;
     left: 0;
-    font-size: 0.8em;
+    font-size: 0.9em;
     color: #333;
     z-index: 1;
 }
 
 
-/* --- Modal Stilleri --- */
+/* --- Modal Stilleri (iOS Pop-up Benzeri) --- */
 .modal {
     display: none; 
     position: fixed;
-    z-index: 10; 
+    z-index: 100; /* Her şeyin üstünde */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.4); 
-    padding-top: 20px;
+    background-color: rgba(0,0,0,0.6); /* Daha koyu blur efekti */
+    
+    /* iOS modal geçişine benzer, alttan açılma efekti için */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.2s, opacity 0.2s;
+}
+
+/* Modal Açıkken */
+.modal[style*="block"] {
+    visibility: visible;
+    opacity: 1;
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin: 5% auto; 
+    margin: 0; /* Ortaya hizalama için margin 0 */
     padding: 20px;
-    border: 1px solid #888;
     width: 90%; 
     max-width: 400px;
-    border-radius: 8px;
+    border-radius: 14px; /* Yuvarlak iOS modal köşeleri */
     position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .large-modal {
-    max-width: 650px; 
+    max-width: 600px; 
 }
 
 .close-button {
-    color: #aaa;
+    color: #8e8e93; /* Soluk gri */
     float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close-button:hover,
-.close-button:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+    font-size: 30px;
+    font-weight: 300; /* Daha ince 'X' */
 }
 
 /* --- Toplu Giriş Modal Stilleri --- */
-.month-selector {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
 #days-input-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-    gap: 15px;
-    max-height: 400px; 
-    overflow-y: auto;
-    padding-right: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 10px;
+    max-height: 50vh; 
+    overflow-y: scroll;
+    padding-right: 5px;
 }
 
 .day-input-group {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px;
-    background-color: #f9f9f9;
-    border-radius: 4px;
-    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0; /* Hafif çizgi */
 }
 
 .day-input-group label {
-    font-weight: normal;
-    font-size: 1em;
-    margin: 0;
-    flex-grow: 1;
+    font-size: 0.95em;
 }
 
 .day-input-group input[type="number"], 
 .month-selector input[type="month"] {
-    width: 70px;
-    text-align: center;
-    padding: 5px;
+    width: 60px;
+    padding: 8px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 6px;
+    background-color: #f9f9f9;
 }
 
 .edit-all-btn {
-    background-color: #3498db;
-    display: block;
-    width: 100%;
-    margin-top: 20px;
+    background-color: #5856d6; /* iOS Moru */
+    box-shadow: 0 3px 6px rgba(88, 86, 214, 0.3);
 }
 
 .edit-all-btn:hover {
-    background-color: #2980b9;
+    background-color: #4846c4;
 }
 
 /* --- Medya Sorguları (Telefon Uyumluluğu) --- */
 @media (max-width: 768px) {
-    h1 {
-        font-size: 1.5em;
+    main {
+        padding: 0 5px;
+    }
+    header {
+        padding: 15px 10px;
+    }
+    .calendar-container {
+        border-radius: 0; /* Mobil tam ekran kaplama */
+        box-shadow: none;
+        padding: 10px 5px;
     }
     .modal-content {
-        margin: 10% auto;
-    }
-    .large-modal {
         max-width: 95%;
     }
     #days-input-list {
         grid-template-columns: 1fr;
-    }
-    .calendar-day {
-        min-height: 60px;
     }
 }
