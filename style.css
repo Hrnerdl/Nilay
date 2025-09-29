@@ -1,235 +1,103 @@
-/* Genel Ayarlar ve Font */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f7f9;
-    color: #333;
-    line-height: 1.6;
-}
+/* --- index.html'den gelen eski kodlar burada kalmalı --- */
 
-header {
-    background-color: #e74c3c; /* Hemşirelikle ilişkilendirilebilecek bir renk */
-    color: white;
-    padding: 20px 10px;
+/* Yeni Yapı Stilleri */
+.start-section {
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-    margin: 0;
-    font-size: 1.8em;
-}
-
-main {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 0 10px;
-    display: flex;
-    flex-direction: column; /* Mobil için dikey sıralama */
-    gap: 20px;
-}
-
-/* Form ve Takvim Alanlarını Biçimlendirme */
-.input-form, .calendar-container {
+    margin: 50px auto;
+    padding: 30px;
     background-color: white;
-    padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
 }
 
-.input-form h2 {
-    color: #e74c3c;
-    margin-top: 0;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-input[type="date"], input[type="number"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; /* Padding'in genişliğe dahil olmasını sağlar */
-}
-
-button {
-    background-color: #2ecc71; /* Ekleme butonu için yeşil */
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-    margin-top: 10px;
-}
-
-button:hover {
-    background-color: #27ae60;
-}
-
-/* Takvim Başlığı */
-.calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.calendar-header button {
-    background: none;
-    color: #e74c3c;
-    border: 1px solid #e74c3c;
-    padding: 5px 10px;
+.start-section p {
     font-size: 1.2em;
+    color: #333;
 }
 
-.calendar-header h2 {
-    margin: 0;
-    font-size: 1.5em;
+.start-section button {
+    background-color: #2ecc71;
+    padding: 15px 25px;
+    font-size: 1.1em;
 }
 
-/* Takvim Grid Yapısı */
-.calendar {
-    display: grid;
-    /* Haftanın 7 günü için 7 eşit sütun */
-    grid-template-columns: repeat(7, 1fr); 
-    gap: 5px;
+.hidden {
+    display: none !important;
 }
 
-.calendar-day-header, .calendar-day {
-    padding: 10px 5px;
+/* Büyük Modal (Aylık Giriş için) */
+.large-modal {
+    max-width: 650px; /* Daha geniş */
+    width: 90%;
+}
+
+.month-selector {
     text-align: center;
-    border-radius: 4px;
+    margin-bottom: 20px;
 }
 
-.calendar-day-header {
-    background-color: #bdc3c7;
-    font-weight: bold;
-    color: #444;
+/* Gün Giriş Listesi */
+#days-input-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Duyarlı sütunlar */
+    gap: 15px;
+    max-height: 400px; /* Kaydırma çubuğu için */
+    overflow-y: auto;
+    padding-right: 10px;
 }
 
-.calendar-day {
-    background-color: #ecf0f1;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    min-height: 80px; /* Telefonlarda dokunmayı kolaylaştırmak için */
+.day-input-group {
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    position: relative;
+    padding: 8px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
     border: 1px solid #ddd;
 }
 
-.calendar-day:hover:not(.empty-day) {
-    background-color: #dce0e3;
+.day-input-group label {
+    font-weight: normal;
+    font-size: 1em;
+    margin: 0;
+    flex-grow: 1;
 }
 
-.empty-day {
-    background-color: transparent;
-    border: none;
-    cursor: default;
-}
-
-.day-number {
-    font-weight: bold;
-    font-size: 1.2em;
-    align-self: flex-start; /* Günü sol üste hizala */
+.day-input-group input[type="number"] {
+    width: 70px;
+    text-align: center;
     padding: 5px;
 }
 
-/* Nöbet Bilgisi */
-.shift-info {
-    font-size: 0.9em;
-    font-weight: bold;
-    color: white;
-    background-color: #e74c3c; /* Nöbet olan günler için kırmızı arka plan */
-    padding: 3px 5px;
-    border-radius: 3px;
-    margin-top: auto; /* Saati alta hizala */
+/* Takvimdeki Boş Gün (Emoji) Stili */
+.calendar-day.free-day {
+    background-color: #e6ffe6; /* Açık yeşil arka plan */
+    font-size: 2em; /* Emoji büyük olsun */
+    justify-content: center; /* Ortaya hizala */
+    align-items: center; /* Ortaya hizala */
+    color: #2ecc71;
+}
+
+.calendar-day.shift-day {
+    background-color: #fbe6e6; /* Nöbet günü arka planı */
+}
+
+/* Düzenleme Butonu (Tüm Ayı Düzenle) */
+.edit-all-btn {
+    display: block;
     width: 100%;
-    box-sizing: border-box;
+    margin-top: 20px;
+    background-color: #3498db;
 }
 
-/* Düzenleme Modalı (Popup) */
-.modal {
-    display: none; /* Varsayılan olarak gizli */
-    position: fixed;
-    z-index: 10; 
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4); 
-    padding-top: 60px;
+.edit-all-btn:hover {
+    background-color: #2980b9;
 }
 
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto; /* Ortalamak için */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Mobil uyumluluk için genişlik */
-    max-width: 400px;
-    border-radius: 8px;
-    position: relative;
-}
-
-.close-button {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close-button:hover,
-.close-button:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-#edit-date-display {
-    font-style: italic;
-    margin-bottom: 15px;
-}
-
-.delete-btn {
-    background-color: #95a5a6; /* Silme butonu için farklı bir renk */
-}
-
-.delete-btn:hover {
-    background-color: #7f8c8d;
-}
-
-/* --- Medya Sorguları (Duyarlı Tasarım) --- */
-@media (min-width: 768px) {
-    /* Tablet ve Masaüstü Görünümü */
-    main {
-        flex-direction: row; /* Yan yana sıralama */
-    }
-
-    .input-form {
-        flex: 1; /* Form daha az yer kaplasın */
-        max-width: 300px;
-    }
-
-    .calendar-container {
-        flex: 3; /* Takvim daha çok yer kaplasın */
-    }
-
-    h1 {
-        font-size: 2.2em;
+/* Küçük Ekranlarda Formu Dikey Tut */
+@media (max-width: 768px) {
+    #days-input-list {
+        grid-template-columns: 1fr;
     }
 }
