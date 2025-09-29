@@ -1,48 +1,235 @@
-/* style.css */
-:root{
---bg:#0f1724; /* deep slate */
---card:#0b1220;
---muted:#9aa4b2;
---accent:#7c5cff;
---accent-2:#00cba9;
+/* Genel Ayarlar ve Font */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f9;
+    color: #333;
+    line-height: 1.6;
 }
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-background:linear-gradient(180deg,var(--bg),#071022);
-color:#e6eef8;display:flex;flex-direction:column;min-height:100vh;padding:16px;
-}
-.topbar{display:flex;flex-direction:column;gap:12px;align-items:center}
-.topbar h1{margin:0;font-size:1.15rem;text-align:center}
-.controls{display:flex;gap:8px;align-items:center;margin-top:6px}
-.controls button{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:10px;color:inherit;cursor:pointer}
-button.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));border:none;padding:8px 12px;border-radius:12px;color:white}
-button.danger{background:transparent;border:1px solid #ff6b6b;color:#ffb3b3;padding:8px 12px;border-radius:10px}
-.month-label{min-width:180px;text-align:center;font-weight:600}
-.calendar-wrap{max-width:1100px;margin:18px auto 40px;width:100%;background:rgba(255,255,255,0.02);border-radius:14px;padding:14px}
-.weekdays{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;padding:6px 0;color:var(--muted);font-size:0.9rem}
-.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
-.day{
-min-height:110px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:10px;padding:8px;position:relative;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,0.02)
-}
-.day .date{position:absolute;top:8px;left:8px;font-size:0.85rem;font-weight:600}
-.day .shifts{margin-top:26px;display:flex;flex-direction:column;gap:6px;}
-.shift-pill{font-size:0.78rem;padding:6px 8px;border-radius:8px;background:rgba(124,92,255,0.12);border:1px solid rgba(124,92,255,0.14);backdrop-filter:blur(3px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.day.dim{opacity:0.45}
-.today{box-shadow:0 6px 20px rgba(0,0,0,0.6);border:1px solid rgba(124,92,255,0.18)}
-.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;visibility:hidden;opacity:0;transition:opacity .18s}
-.modal[aria-hidden="false"]{visibility:visible;opacity:1;background:linear-gradient(0deg,rgba(2,6,23,0.7),rgba(2,6,23,0.6))}
-.modal-card{width:100%;max-width:420px;background:var(--card);padding:18px;border-radius:12px;position:relative}
-.close{position:absolute;right:10px;top:6px;background:transparent;border:none;font-size:20px;color:var(--muted)}
-label{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;font-size:0.85rem;color:var(--muted)}
-input[type=date],input[type=time],input[type=text]{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
-.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
-.footer{max-width:1100px;margin:auto;text-align:center;color:var(--muted);font-size:0.85rem}
 
+header {
+    background-color: #e74c3c; /* Hemşirelikle ilişkilendirilebilecek bir renk */
+    color: white;
+    padding: 20px 10px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-@media (max-width:720px){
-.topbar h1{font-size:1rem}
-.day{min-height:100px;padding:8px}
-.month-label{min-width:120px}
+h1 {
+    margin: 0;
+    font-size: 1.8em;
+}
+
+main {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column; /* Mobil için dikey sıralama */
+    gap: 20px;
+}
+
+/* Form ve Takvim Alanlarını Biçimlendirme */
+.input-form, .calendar-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.input-form h2 {
+    color: #e74c3c;
+    margin-top: 0;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="date"], input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Padding'in genişliğe dahil olmasını sağlar */
+}
+
+button {
+    background-color: #2ecc71; /* Ekleme butonu için yeşil */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #27ae60;
+}
+
+/* Takvim Başlığı */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.calendar-header button {
+    background: none;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    padding: 5px 10px;
+    font-size: 1.2em;
+}
+
+.calendar-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+/* Takvim Grid Yapısı */
+.calendar {
+    display: grid;
+    /* Haftanın 7 günü için 7 eşit sütun */
+    grid-template-columns: repeat(7, 1fr); 
+    gap: 5px;
+}
+
+.calendar-day-header, .calendar-day {
+    padding: 10px 5px;
+    text-align: center;
+    border-radius: 4px;
+}
+
+.calendar-day-header {
+    background-color: #bdc3c7;
+    font-weight: bold;
+    color: #444;
+}
+
+.calendar-day {
+    background-color: #ecf0f1;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    min-height: 80px; /* Telefonlarda dokunmayı kolaylaştırmak için */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    border: 1px solid #ddd;
+}
+
+.calendar-day:hover:not(.empty-day) {
+    background-color: #dce0e3;
+}
+
+.empty-day {
+    background-color: transparent;
+    border: none;
+    cursor: default;
+}
+
+.day-number {
+    font-weight: bold;
+    font-size: 1.2em;
+    align-self: flex-start; /* Günü sol üste hizala */
+    padding: 5px;
+}
+
+/* Nöbet Bilgisi */
+.shift-info {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: white;
+    background-color: #e74c3c; /* Nöbet olan günler için kırmızı arka plan */
+    padding: 3px 5px;
+    border-radius: 3px;
+    margin-top: auto; /* Saati alta hizala */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Düzenleme Modalı (Popup) */
+.modal {
+    display: none; /* Varsayılan olarak gizli */
+    position: fixed;
+    z-index: 10; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); 
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* Ortalamak için */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Mobil uyumluluk için genişlik */
+    max-width: 400px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#edit-date-display {
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+.delete-btn {
+    background-color: #95a5a6; /* Silme butonu için farklı bir renk */
+}
+
+.delete-btn:hover {
+    background-color: #7f8c8d;
+}
+
+/* --- Medya Sorguları (Duyarlı Tasarım) --- */
+@media (min-width: 768px) {
+    /* Tablet ve Masaüstü Görünümü */
+    main {
+        flex-direction: row; /* Yan yana sıralama */
+    }
+
+    .input-form {
+        flex: 1; /* Form daha az yer kaplasın */
+        max-width: 300px;
+    }
+
+    .calendar-container {
+        flex: 3; /* Takvim daha çok yer kaplasın */
+    }
+
+    h1 {
+        font-size: 2.2em;
+    }
 }
