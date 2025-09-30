@@ -1,17 +1,15 @@
-// script.js (GÜNCEL SÜRÜM: Ekleme, Silme, Düzenleme)
+// script.js (GÜNCEL SÜRÜM: Örnek Veri Yok, Ekle/Sil/Düzenle Var, PDF Rapor Var)
 
-// Veri depolama ve ID takibi
-let nextTaskId = 5; 
-let patients = [
-    { room: "203", name: "Ayşe Yılmaz", diagnosis: "Pnömoni", allergies: "Penisilin!", vital: "14:00 (120/80)" },
-    { room: "204", name: "Mehmet Kaya", diagnosis: "Kırık", allergies: "Yok", vital: "14:00 (36.5 °C)" }
-];
-let tasks = [
-    { id: 1, text: "Oda 203: İlaç (Antibiyotik)", time: "16:00", priority: "high", done: false },
-    { id: 2, text: "Oda 204: Vital Belirti Ölçümü", time: "15:00", priority: "medium", done: false },
-    { id: 3, text: "Oda 203: IV sıvı kontrolü", time: "14:30", priority: "low", done: true },
-    { id: 4, text: "Oda 204: Pansuman değişimi", time: "17:00", priority: "high", done: false }
-];
+// Veri depolama ve ID takibi: Başlangıçta boş
+let nextTaskId = 1; 
+let patients = []; // Örnek hastalar silindi
+let tasks = []; // Örnek görevler silindi
+
+// jsPDF için Türkçe karakter destekleyen bir font (Helvetica'nın yerine kullanılacak)
+// Bu, Türkçe karakterlerin (ş, ç, ğ, ı, ö, ü) düzgün görünmesini sağlar.
+const TurkishFont = 'helvetica'; // jsPDF'in varsayılan fontlarını kullanıyoruz ve otomatik kodlama ile çözüyoruz.
+// jsPDF'in kendisi Türkçe karakteri destekler, ek fonta gerek kalmaz, sadece doğru şekilde kullanmalıyız.
+
 
 // --- BAŞLANGIÇTA ÇALIŞMASI GEREKEN İŞLEMLER ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -43,15 +41,17 @@ function setupNavigation() {
     });
 }
 
-
 // --- GÖREV YÖNETİM İŞLEVLERİ (Ekleme, Silme, Düzenleme) ---
-
 function renderTasks() {
     const taskList = document.getElementById('task-list');
     taskList.innerHTML = ''; 
     let pendingCount = 0;
 
     tasks.sort((a, b) => a.time.localeCompare(b.time));
+
+    if (tasks.length === 0) {
+        taskList.innerHTML = '<li style="border-left: 5px solid #9e9e9e; background-color: #f0f0f0;">Henüz eklenmiş görev yok. Lütfen yukarıdaki formu kullanın.</li>';
+    }
 
     tasks.forEach(task => {
         const li = document.createElement('li');
@@ -80,7 +80,6 @@ function renderTasks() {
     document.getElementById('pending-tasks-count').textContent = pendingCount;
 }
 
-// Global olarak erişilebilir hale getirildi
 window.toggleTaskDone = function(taskId) {
     const taskIndex = tasks.findIndex(t => t.id === taskId);
     if (taskIndex > -1) {
@@ -100,13 +99,11 @@ window.editTask = function(taskId) {
     const task = tasks.find(t => t.id === taskId);
     if (!task) return;
 
-    // Form alanlarını doldur
     document.getElementById('task-id-to-edit').value = task.id;
     document.getElementById('task-text').value = task.text;
     document.getElementById('task-time').value = task.time;
     document.getElementById('task-priority').value = task.priority;
 
-    // Butonu güncelle
     document.getElementById('task-form-button').textContent = 'Görevi Kaydet';
     document.getElementById('task-form-button').classList.add('edit-button');
 }
@@ -124,6 +121,12 @@ window.cancelTaskEdit = function() {
 function renderPatients() {
     const tableBody = document.getElementById('patient-table-body');
     tableBody.innerHTML = ''; 
+
+    if (patients.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="6" style="text-align: center; color: #777;">Henüz eklenmiş hasta yok. Lütfen yukarıdaki formu kullanın.</td>';
+        tableBody.appendChild(tr);
+    }
 
     patients.forEach(patient => {
         const tr = document.createElement('tr');
@@ -160,18 +163,16 @@ window.editPatient = function(room) {
     const patient = patients.find(p => p.room === room);
     if (!patient) return;
 
-    // Form alanlarını doldur
-    document.getElementById('original-patient-room').value = patient.room; // Eski oda numarasını sakla
+    document.getElementById('original-patient-room').value = patient.room; 
     document.getElementById('patient-room').value = patient.room;
     document.getElementById('patient-name').value = patient.name;
     document.getElementById('patient-diagnosis').value = patient.diagnosis;
     document.getElementById('patient-allergies').value = patient.allergies === 'Yok' ? '' : patient.allergies;
     document.getElementById('patient-vital').value = patient.vital === 'Yok' ? '' : patient.vital;
 
-    // Butonu güncelle
     document.getElementById('patient-form-button').textContent = 'Kaydet';
     document.getElementById('patient-form-button').classList.add('edit-button');
-    document.getElementById('patient-room').disabled = true; // Oda numarasını düzenlerken kilitleriz (isteğe bağlı)
+    document.getElementById('patient-room').disabled = true; 
 }
 
 window.cancelPatientEdit = function() {
@@ -179,7 +180,7 @@ window.cancelPatientEdit = function() {
     document.getElementById('original-patient-room').value = '';
     document.getElementById('patient-form-button').textContent = 'Hasta Ekle';
     document.getElementById('patient-form-button').classList.remove('edit-button');
-    document.getElementById('patient-room').disabled = false; // Kilidi aç
+    document.getElementById('patient-room').disabled = false; 
 }
 
 
@@ -196,7 +197,6 @@ function setupForms() {
         const priority = document.getElementById('task-priority').value;
 
         if (idToEdit) {
-            // Düzenleme Modu
             const taskIndex = tasks.findIndex(t => t.id === parseInt(idToEdit));
             if (taskIndex > -1) {
                 tasks[taskIndex].text = text;
@@ -204,7 +204,6 @@ function setupForms() {
                 tasks[taskIndex].priority = priority;
             }
         } else {
-            // Ekleme Modu
             const newTask = {
                 id: nextTaskId++, 
                 text: text,
@@ -216,7 +215,7 @@ function setupForms() {
         }
 
         renderTasks();
-        cancelTaskEdit(); // Formu temizle ve Ekleme moduna dön
+        cancelTaskEdit(); 
     });
 
     // HASTA FORMU (Ekleme ve Güncelleme)
@@ -231,18 +230,14 @@ function setupForms() {
         const vital = document.getElementById('patient-vital').value || 'Yok';
 
         if (originalRoom) {
-            // Düzenleme Modu
             const patientIndex = patients.findIndex(p => p.room === originalRoom);
             if (patientIndex > -1) {
-                // Oda numarasını güncellemek istiyorsak bu kısımda yapabiliriz, ancak şimdilik kilitli tuttuk.
-                // patients[patientIndex].room = room; 
                 patients[patientIndex].name = name;
                 patients[patientIndex].diagnosis = diagnosis;
                 patients[patientIndex].allergies = allergies;
                 patients[patientIndex].vital = vital;
             }
         } else {
-            // Ekleme Modu
             if (patients.some(p => p.room === room)) {
                 alert(`Hata: ${room} numaralı oda zaten listede var. Lütfen farklı bir oda numarası girin.`);
                 return;
@@ -253,34 +248,96 @@ function setupForms() {
         }
 
         renderPatients();
-        cancelPatientEdit(); // Formu temizle ve Ekleme moduna dön
+        cancelPatientEdit(); 
     });
 }
 
 
-// --- TESLİM RAPORU İŞLEVİ (Aynı Kaldı) ---
-window.generateReport = function() { 
-    const notes = document.getElementById('notes-area').value;
-    const completedTasks = tasks.filter(t => t.done).map(t => `${t.time} - ${t.text}`);
-    const pendingTasks = tasks.filter(t => !t.done).map(t => `${t.time} - ${t.text}`);
+// --- PDF RAPORLAMA İŞLEVİ (jsPDF Entegrasyonu) ---
 
-    let reportText = `*** NÖBET TESLİM RAPORU ***\n`;
-    reportText += `Tarih: ${new Date().toLocaleDateString('tr-TR')}\n`;
-    reportText += `Saat: ${new Date().toLocaleTimeString('tr-TR')}\n\n`;
-    
-    reportText += `--- VARDİYA BOYUNCA ÖZEL NOTLAR ---\n`;
-    reportText += `${notes || 'Bugün özel not girilmedi.'}\n\n`;
+window.generatePDFReport = function() { 
+    // jsPDF nesnesini oluştur
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4'); // Dikey, mm birimi, A4 boyutu
+    let y_offset = 15; // Dikey başlangıç pozisyonu
 
-    reportText += `--- TAMAMLANAN GÖREVLER (${completedTasks.length}) ---\n`;
-    reportText += completedTasks.length > 0 ? completedTasks.join('\n') : 'Yok';
-    reportText += `\n\n`;
+    // Başlık Stilini Ayarla
+    doc.setFont(TurkishFont, 'bold');
+    doc.setFontSize(18);
+    doc.text('NÖBET TESLİM RAPORU', 105, y_offset, { align: 'center' });
+    y_offset += 10;
+    
+    doc.setFontSize(10);
+    doc.setFont(TurkishFont, 'normal');
+    doc.text(`Tarih: ${new Date().toLocaleDateString('tr-TR')}`, 20, y_offset);
+    doc.text(`Saat: ${new Date().toLocaleTimeString('tr-TR')}`, 190, y_offset, { align: 'right' });
+    y_offset += 8;
 
-    reportText += `--- BEKLEYEN/DEVREDİLEN GÖREVLER (${pendingTasks.length}) ---\n`;
-    reportText += pendingTasks.length > 0 ? pendingTasks.join('\n') : 'Yok';
+    // --- VARDİYA NOTLARI ---
+    doc.setFontSize(14);
+    doc.setFont(TurkishFont, 'bold');
+    doc.text('1. Vardiya Boyunca Notlar', 20, y_offset);
+    y_offset += 5;
     
-    const reportOutput = document.getElementById('report-output');
-    reportOutput.textContent = reportText;
-    reportOutput.style.display = 'block';
+    const notes = document.getElementById('notes-area').value || 'Özel not girilmemiştir.';
+    doc.setFontSize(10);
+    doc.setFont(TurkishFont, 'normal');
+    const notesText = doc.splitTextToSize(notes, 170); // Genişlik sınırı 170mm
+    doc.text(notesText, 20, y_offset);
+    y_offset += notesText.length * 5 + 5; // Metin satır sayısına göre boşluk bırak
+
+
+    // --- GÖREVLERİN ÖZETİ ---
+    const completedTasks = tasks.filter(t => t.done).map(t => [t.time, t.text, "Tamamlandı"]);
+    const pendingTasks = tasks.filter(t => !t.done).map(t => [t.time, t.text, "Bekliyor"]);
+    const taskData = [...completedTasks, ...pendingTasks];
+
+    doc.setFontSize(14);
+    doc.setFont(TurkishFont, 'bold');
+    doc.text('2. Görevler ve İlaç Takibi Özeti', 20, y_offset);
+    y_offset += 5;
+
+    doc.autoTable({
+        startY: y_offset,
+        head: [['Saat', 'Görev Tanımı', 'Durum']],
+        body: taskData,
+        theme: 'striped',
+        styles: { font: TurkishFont, cellPadding: 2, fontSize: 9 },
+        headStyles: { fillColor: [0, 121, 107] }, // #00796b
+        columnStyles: {
+            0: { cellWidth: 20 },
+            2: { cellWidth: 20 }
+        }
+    });
+    y_offset = doc.lastAutoTable.finalY + 10;
+
+    // --- HASTA LİSTESİ ---
+    const patientData = patients.map(p => [
+        p.room,
+        p.name,
+        p.diagnosis,
+        p.allergies.toUpperCase(),
+        p.vital
+    ]);
+
+    doc.setFontSize(14);
+    doc.setFont(TurkishFont, 'bold');
+    doc.text('3. Hasta Profilleri', 20, y_offset);
+    y_offset += 5;
     
-    alert('Teslim Raporu Başarıyla Oluşturuldu!');
+    doc.autoTable({
+        startY: y_offset,
+        head: [['Oda', 'Ad Soyad', 'Tanı', 'Alerjiler', 'Son Vital']],
+        body: patientData,
+        theme: 'grid',
+        styles: { font: TurkishFont, cellPadding: 2, fontSize: 9 },
+        headStyles: { fillColor: [0, 47, 63] },
+        columnStyles: {
+            0: { cellWidth: 15 },
+            3: { cellWidth: 30, fontStyle: 'bold', textColor: [255, 0, 0] } // Alerjileri kırmızı yap
+        }
+    });
+
+    // PDF'i kaydet
+    doc.save(`NursiFlow_Rapor_${new Date().toLocaleDateString('tr-TR')}.pdf`);
 }
