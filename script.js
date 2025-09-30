@@ -1,18 +1,51 @@
-// script.js (GÜNCEL SÜRÜM: Örnek Veri Yok, Ekle/Sil/Düzenle Var, PDF Rapor Var)
+// script.js (GÜNCEL SÜRÜM: LocalStorage ile Kalıcı Veri Saklama)
 
-// Veri depolama ve ID takibi: Başlangıçta boş
+// Veri depolama ve ID takibi: LocalStorage'dan çekilecek
 let nextTaskId = 1; 
-let patients = []; // Örnek hastalar silindi
-let tasks = []; // Örnek görevler silindi
+let patients = []; 
+let tasks = []; 
 
-// jsPDF için Türkçe karakter destekleyen bir font (Helvetica'nın yerine kullanılacak)
-// Bu, Türkçe karakterlerin (ş, ç, ğ, ı, ö, ü) düzgün görünmesini sağlar.
-const TurkishFont = 'helvetica'; // jsPDF'in varsayılan fontlarını kullanıyoruz ve otomatik kodlama ile çözüyoruz.
-// jsPDF'in kendisi Türkçe karakteri destekler, ek fonta gerek kalmaz, sadece doğru şekilde kullanmalıyız.
+// jsPDF için Türkçe karakter destekleyen font
+const TurkishFont = 'helvetica';
+
+// --- LOCALSTORAGE İŞLEVLERİ ---
+
+/**
+ * Verileri LocalStorage'dan yükler.
+ */
+function loadDataFromStorage() {
+    const storedTasks = localStorage.getItem('nursiflowTasks');
+    const storedPatients = localStorage.getItem('nursiflowPatients');
+    const storedNextId = localStorage.getItem('nursiflowNextTaskId');
+
+    if (storedTasks) {
+        tasks = JSON.parse(storedTasks);
+    }
+    if (storedPatients) {
+        patients = JSON.parse(storedPatients);
+    }
+    if (storedNextId) {
+        // En yüksek ID'yi bul ve bir sonraki ID'yi ayarla
+        const maxId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) : 0;
+        nextTaskId = maxId + 1;
+    }
+}
+
+/**
+ * Güncel verileri LocalStorage'a kaydeder.
+ */
+function saveDataToStorage() {
+    localStorage.setItem('nursiflowTasks', JSON.stringify(tasks));
+    localStorage.setItem('nursiflowPatients', JSON.stringify(patients));
+    localStorage.setItem('nursiflowNextTaskId', nextTaskId);
+}
 
 
 // --- BAŞLANGIÇTA ÇALIŞMASI GEREKEN İŞLEMLER ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Önce verileri yükle
+    loadDataFromStorage();
+    
     setupNavigation();
     renderTasks();
     renderPatients();
@@ -41,7 +74,8 @@ function setupNavigation() {
     });
 }
 
-// --- GÖREV YÖNETİM İŞLEVLERİ (Ekleme, Silme, Düzenleme) ---
+// --- GÖREV YÖNETİM İŞLEVLERİ ---
+
 function renderTasks() {
     const taskList = document.getElementById('task-list');
     taskList.innerHTML = ''; 
@@ -85,6 +119,7 @@ window.toggleTaskDone = function(taskId) {
     if (taskIndex > -1) {
         tasks[taskIndex].done = !tasks[taskIndex].done; 
         renderTasks();
+        saveDataToStorage(); // VERİ KAYDET
     }
 }
 
@@ -92,6 +127,7 @@ window.deleteTask = function(taskId) {
     if (confirm("Bu görevi silmek istediğinizden emin misiniz?")) {
         tasks = tasks.filter(t => t.id !== taskId);
         renderTasks();
+        saveDataToStorage(); // VERİ KAYDET
     }
 }
 
@@ -116,7 +152,7 @@ window.cancelTaskEdit = function() {
 }
 
 
-// --- HASTA YÖNETİM İŞLEVLERİ (Ekleme, Silme, Düzenleme) ---
+// --- HASTA YÖNETİM İŞLEVLERİ ---
 
 function renderPatients() {
     const tableBody = document.getElementById('patient-table-body');
@@ -156,6 +192,7 @@ window.deletePatient = function(room) {
     if (confirm(`${room} numaralı hastayı silmek istediğinizden emin misiniz?`)) {
         patients = patients.filter(p => p.room !== room);
         renderPatients();
+        saveDataToStorage(); // VERİ KAYDET
     }
 }
 
@@ -216,6 +253,7 @@ function setupForms() {
 
         renderTasks();
         cancelTaskEdit(); 
+        saveDataToStorage(); // VERİ KAYDET
     });
 
     // HASTA FORMU (Ekleme ve Güncelleme)
@@ -249,19 +287,18 @@ function setupForms() {
 
         renderPatients();
         cancelPatientEdit(); 
+        saveDataToStorage(); // VERİ KAYDET
     });
 }
 
 
-// --- PDF RAPORLAMA İŞLEVİ (jsPDF Entegrasyonu) ---
+// --- PDF RAPORLAMA İŞLEVİ (Aynı Kaldı) ---
 
 window.generatePDFReport = function() { 
-    // jsPDF nesnesini oluştur
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('p', 'mm', 'a4'); // Dikey, mm birimi, A4 boyutu
-    let y_offset = 15; // Dikey başlangıç pozisyonu
+    const doc = new jsPDF('p', 'mm', 'a4');
+    let y_offset = 15;
 
-    // Başlık Stilini Ayarla
     doc.setFont(TurkishFont, 'bold');
     doc.setFontSize(18);
     doc.text('NÖBET TESLİM RAPORU', 105, y_offset, { align: 'center' });
@@ -282,10 +319,9 @@ window.generatePDFReport = function() {
     const notes = document.getElementById('notes-area').value || 'Özel not girilmemiştir.';
     doc.setFontSize(10);
     doc.setFont(TurkishFont, 'normal');
-    const notesText = doc.splitTextToSize(notes, 170); // Genişlik sınırı 170mm
+    const notesText = doc.splitTextToSize(notes, 170);
     doc.text(notesText, 20, y_offset);
-    y_offset += notesText.length * 5 + 5; // Metin satır sayısına göre boşluk bırak
-
+    y_offset += notesText.length * 5 + 5;
 
     // --- GÖREVLERİN ÖZETİ ---
     const completedTasks = tasks.filter(t => t.done).map(t => [t.time, t.text, "Tamamlandı"]);
@@ -303,7 +339,7 @@ window.generatePDFReport = function() {
         body: taskData,
         theme: 'striped',
         styles: { font: TurkishFont, cellPadding: 2, fontSize: 9 },
-        headStyles: { fillColor: [0, 121, 107] }, // #00796b
+        headStyles: { fillColor: [0, 121, 107] },
         columnStyles: {
             0: { cellWidth: 20 },
             2: { cellWidth: 20 }
@@ -334,10 +370,9 @@ window.generatePDFReport = function() {
         headStyles: { fillColor: [0, 47, 63] },
         columnStyles: {
             0: { cellWidth: 15 },
-            3: { cellWidth: 30, fontStyle: 'bold', textColor: [255, 0, 0] } // Alerjileri kırmızı yap
+            3: { cellWidth: 30, fontStyle: 'bold', textColor: [255, 0, 0] }
         }
     });
 
-    // PDF'i kaydet
     doc.save(`NursiFlow_Rapor_${new Date().toLocaleDateString('tr-TR')}.pdf`);
 }
