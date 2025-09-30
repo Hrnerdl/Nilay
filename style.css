@@ -9,14 +9,13 @@ body {
     color: #333;
 }
 .container {
-    display: flex;
+    display: flex; /* Ana düzenleyici: Navigasyon ve içerik yan yana */
     max-width: 1200px;
     margin: 20px auto;
     background-color: #fff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
-    /* Mobil görünümde tam ekran olması için margin kaldırılabilir */
 }
 .content {
     flex-grow: 1;
@@ -26,13 +25,15 @@ h1, h2, h3 {
     color: #004d40;
 }
 
-/* NAVİGASYON STİLLERİ (Masaüstü) */
+/* NAVİGASYON STİLLERİ (Masaüstü ve Varsayılan) */
 nav {
     width: 200px;
     background-color: #00796b; 
     color: white;
     padding: 20px 0;
     flex-shrink: 0;
+    /* Mobil düzeltmesi için eklendi: flex özelliklerini sıfırla */
+    display: block; 
 }
 nav h2 {
     text-align: center;
@@ -46,13 +47,25 @@ nav a {
     color: white;
     border-left: 5px solid transparent;
     transition: background-color 0.3s, border-left-color 0.3s;
+    /* Mobil düzeltmesi için eklendi: */
+    flex-grow: unset;
+    text-align: left;
+    border-bottom: none !important;
 }
 nav a:hover, nav a.active {
     background-color: #004d40;
     border-left-color: #ffc107; 
 }
 
-/* FORM STİLLERİ */
+/* MODÜL VE GÖSTERİM */
+.module {
+    display: none;
+}
+.module.active {
+    display: block;
+}
+
+/* FORM STİLLERİ (Aynı kaldı, mobil için flex-wrap kullanıyor) */
 .form-container {
     border: 1px solid #ccc; 
     padding: 15px; 
@@ -98,15 +111,13 @@ nav a:hover, nav a.active {
     align-items: center;
     border-left: 5px solid #4caf50;
     transition: background-color 0.3s;
-    /* Mobil uyumluluk için flex-wrap ekliyoruz */
-    flex-wrap: wrap; 
+    flex-wrap: wrap; /* Mobil uyumluluk için korundu */
 }
 .task-actions { 
     display: flex;
     gap: 5px;
-    margin-top: 5px; /* Mobilde alt satıra geçtiğinde boşluk */
+    margin-top: 5px; 
 }
-
 
 /* HASTA PROFİLİ STİLLERİ */
 #patients-table {
@@ -118,14 +129,13 @@ nav a:hover, nav a.active {
     padding: 10px;
     text-align: left;
 }
-/* Alerji uyarı stili diğerleri ile aynı kaldı */
 .patient-alert {
     color: white;
     background-color: #f44336;
     padding: 3px 6px;
     border-radius: 3px;
     font-weight: bold;
-    white-space: nowrap; /* Mobilde sığması için metin kaymasını engeller */
+    white-space: nowrap; 
     display: inline-block;
 }
 
@@ -142,9 +152,7 @@ nav a:hover, nav a.active {
 /* ... Diğer buton stilleri aynı ... */
 
 
-/* -------------------------------------------------------------------- */
-/* -------------------------- MOBİL UYUMLULUK ------------------------- */
-/* -------------------------------------------------------------------- */
+/* -------------------------- MOBİL UYUMLULUK (@media) ------------------------- */
 
 @media (max-width: 768px) {
     /* Genel Konteyner ve İçerik */
@@ -163,49 +171,41 @@ nav a:hover, nav a.active {
     nav {
         width: 100%;
         padding: 10px 0;
-        /* Navigasyon linklerini yan yana dizmek için */
         display: flex; 
         flex-wrap: wrap;
         justify-content: space-around;
-        align-items: center;
     }
     nav h2 {
-        width: 100%; /* Başlığı tam genişlik yap */
+        width: 100%; 
         margin-bottom: 10px;
     }
     nav a {
         padding: 10px;
-        border-left: none;
-        border-bottom: 3px solid transparent;
-        flex-grow: 1; /* Linkleri eşit yay */
+        flex-grow: 1; 
         text-align: center;
         font-size: 0.9em;
+        border-left: none; /* Yan çizgiyi kaldır */
+        border-bottom: 3px solid transparent;
     }
     nav a:hover, nav a.active {
-        border-left-color: transparent;
-        border-bottom-color: #ffc107; /* Vurguyu alta al */
+        border-bottom-color: #ffc107; 
+        background-color: #004d40;
     }
 
     /* Form Düzeni */
-    #add-task-form input, 
-    #add-task-form select,
-    #add-task-form button,
-    #add-patient-form input,
-    #add-patient-form button {
+    #add-task-form input, #add-task-form select, #add-task-form button,
+    #add-patient-form input, #add-patient-form button {
         flex: 1 1 100%; /* Tüm form elemanlarını alt alta diz */
         min-width: unset;
     }
-    .form-container h3 {
-        margin-top: 0;
-    }
-
+    
     /* Görev Listesi */
     #task-list li span {
-        width: 100%; /* Görev metnini tam genişlik yap */
+        width: 100%; 
         margin-bottom: 5px;
     }
     .task-actions {
-        width: 100%; /* Butonları tam genişlikte alt alta al */
+        width: 100%; 
         justify-content: space-between;
     }
     .task-actions button {
@@ -216,10 +216,8 @@ nav a:hover, nav a.active {
     #patients-table {
         display: block;
         overflow-x: auto; /* Tablo genişse kaydırma çubuğu çıkar */
-        white-space: nowrap; /* Sütunların kaymasını engelle */
+        white-space: nowrap;
     }
-    
-    /* Gerekirse tablo metin boyutunu küçült */
     #patients-table th, #patients-table td {
         font-size: 0.8em;
         padding: 8px;
