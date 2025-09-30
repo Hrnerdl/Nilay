@@ -28,7 +28,7 @@ h1, h2, h3 {
 /* NAVİGASYON STİLLERİ - Aynı Kaldı */
 nav {
     width: 200px;
-    background-color: #00796b;
+    background-color: #00796b; 
     color: white;
     padding: 20px 0;
     flex-shrink: 0;
@@ -48,7 +48,7 @@ nav a {
 }
 nav a:hover, nav a.active {
     background-color: #004d40;
-    border-left-color: #ffc107;
+    border-left-color: #ffc107; 
 }
 
 /* MODÜL VE GÖSTERİM - Aynı Kaldı */
@@ -90,7 +90,7 @@ nav a:hover, nav a.active {
     min-width: 80px;
 }
 
-/* GÖREV LİSTESİ STİLLERİ - Eylem Butonları için Güncellendi */
+/* GÖREV LİSTESİ STİLLERİ - Aynı Kaldı */
 #task-list {
     list-style: none; 
     padding: 0;
@@ -119,7 +119,7 @@ nav a:hover, nav a.active {
     border-left-color: #ff9800 !important; 
     background-color: #fff3e0 !important; 
 }
-.task-actions { /* Görev butonları konteyneri */
+.task-actions { 
     display: flex;
     gap: 5px;
 }
@@ -150,8 +150,7 @@ nav a:hover, nav a.active {
     font-weight: bold;
 }
 
-
-/* BUTON VE EK EYLEM STİLLERİ */
+/* BUTON VE EK EYLEM STİLLERİ - Aynı Kaldı */
 .button {
     background-color: #00796b;
     color: white;
@@ -183,12 +182,13 @@ nav a:hover, nav a.active {
 .cancel-button:hover {
     background-color: #757575;
 }
-#report-output { /* Aynı Kaldı */
-    margin-top: 20px; 
-    border: 1px dashed #ccc; 
-    padding: 15px; 
-    white-space: pre-wrap; 
-    background-color: #f0f0f0;
+#notes-area {
+    width: 100%;
+    min-height: 150px;
+    padding: 15px;
+    border: 1px solid #ccc;
     border-radius: 4px;
-    display: none; 
+    box-sizing: border-box;
+    resize: vertical;
+    margin-bottom: 10px;
 }
