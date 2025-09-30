@@ -32,8 +32,9 @@
             <h2>Görev ve İlaç Takibi</h2>
 
             <div class="form-container">
-                <h3>Yeni Görev Ekle</h3>
+                <h3>Yeni Görev Ekle / Düzenle</h3>
                 <form id="add-task-form">
+                    <input type="hidden" id="task-id-to-edit" value="">
                     <input type="text" id="task-text" placeholder="Görevin Tanımı (Oda No: İşlem)" required>
                     <input type="time" id="task-time" required>
                     <select id="task-priority" required>
@@ -41,7 +42,8 @@
                         <option value="medium">Orta Öncelik</option>
                         <option value="high">Yüksek Öncelik</option>
                     </select>
-                    <button type="submit" class="button">Görevi Ekle</button>
+                    <button type="submit" class="button" id="task-form-button">Görevi Ekle</button>
+                    <button type="button" class="button cancel-button" onclick="cancelTaskEdit()">İptal</button>
                 </form>
             </div>
 
@@ -53,14 +55,16 @@
             <h2>Hasta Profilleri ve Özet Bilgi</h2>
             
             <div class="form-container">
-                <h3>Yeni Hasta Kaydı</h3>
+                <h3>Yeni Hasta Kaydı / Düzenle</h3>
                 <form id="add-patient-form">
+                    <input type="hidden" id="original-patient-room" value="">
                     <input type="text" id="patient-room" placeholder="Oda No" required>
                     <input type="text" id="patient-name" placeholder="Ad Soyad" required>
                     <input type="text" id="patient-diagnosis" placeholder="Tanı" required>
                     <input type="text" id="patient-allergies" placeholder="Alerjiler (Yoksa boş bırakın)">
                     <input type="text" id="patient-vital" placeholder="Son Vital (Örn: 120/80)">
-                    <button type="submit" class="button">Hasta Ekle</button>
+                    <button type="submit" class="button" id="patient-form-button">Hasta Ekle</button>
+                    <button type="button" class="button cancel-button" onclick="cancelPatientEdit()">İptal</button>
                 </form>
             </div>
 
@@ -72,7 +76,7 @@
                         <th>Tanı</th>
                         <th>Alerjiler</th>
                         <th>Son Vital</th>
-                    </tr>
+                        <th>Eylemler</th> </tr>
                 </thead>
                 <tbody id="patient-table-body">
                     </tbody>
