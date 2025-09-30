@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NursiFlow | Hemşire İş Akışı Yönetimi</title>
     <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 
@@ -24,7 +27,7 @@
             <p>Bugün yapılması gereken **<span id="pending-tasks-count"></span>** göreviniz var.</p>
             <h3>Önemli Uyarılar</h3>
             <ul class="alert-list">
-                <li>Oda 203 (Ayşe Yılmaz): Penisiline alerjisi var!</li>
+                <li>Önemli alerjiler hasta listesinde kırmızı renkle vurgulanmıştır.</li>
             </ul>
         </section>
 
@@ -76,7 +79,8 @@
                         <th>Tanı</th>
                         <th>Alerjiler</th>
                         <th>Son Vital</th>
-                        <th>Eylemler</th> </tr>
+                        <th>Eylemler</th>
+                    </tr>
                 </thead>
                 <tbody id="patient-table-body">
                     </tbody>
@@ -86,9 +90,9 @@
         <section id="notes" class="module">
             <h2>Nöbet Teslim ve Vardiya Notları</h2>
             <textarea id="notes-area" placeholder="Vardiya boyunca önemli gelişmeleri buraya kaydedin..."></textarea>
-            <button class="button" onclick="generateReport()">Teslim Raporu Oluştur</button>
-            <div id="report-output"></div>
-        </section>
+            <button class="button" onclick="generatePDFReport()">PDF Raporu Oluştur</button>
+            
+            </section>
 
     </div>
 </div>
