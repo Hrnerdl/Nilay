@@ -1,4 +1,4 @@
-// script.js (Kalıcı Veri Korumalı Sürüm - Mobil Uyumlu)
+// script.js (GÜNCEL SÜRÜM: LocalStorage, Nilay Marka Adı)
 
 // Veri depolama ve ID takibi: LocalStorage'dan çekilecek
 let nextTaskId = 1; 
@@ -10,9 +10,9 @@ const TurkishFont = 'helvetica';
 // --- LOCALSTORAGE İŞLEVLERİ ---
 
 function loadDataFromStorage() {
-    const storedTasks = localStorage.getItem('nursiflowTasks');
+    const storedTasks = localStorage.getItem('nursiflowTasks'); // Anahtarları koruyarak verileri kaybetmemeyi sağladım
     const storedPatients = localStorage.getItem('nursiflowPatients');
-
+    
     if (storedTasks) {
         tasks = JSON.parse(storedTasks);
     }
@@ -20,7 +20,6 @@ function loadDataFromStorage() {
         patients = JSON.parse(storedPatients);
     }
     
-    // En yüksek ID'yi bul ve bir sonraki ID'yi ayarla
     const maxId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) : 0;
     nextTaskId = maxId + 1;
 }
@@ -41,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupForms();
 });
 
-// --- NAVİGASYON İŞLEVLERİ (Aynı Kaldı) ---
+// --- NAVİGASYON İŞLEVLERİ ---
 function setupNavigation() {
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function(e) {
@@ -363,5 +362,5 @@ window.generatePDFReport = function() {
         }
     });
 
-    doc.save(`NursiFlow_Rapor_${new Date().toLocaleDateString('tr-TR')}.pdf`);
+    doc.save(`Nilay_Rapor_${new Date().toLocaleDateString('tr-TR')}.pdf`);
 }
