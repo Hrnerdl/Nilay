@@ -1,22 +1,17 @@
-// script.js (GÜNCEL SÜRÜM: LocalStorage ile Kalıcı Veri Saklama)
+// script.js (Kalıcı Veri Korumalı Sürüm - Mobil Uyumlu)
 
 // Veri depolama ve ID takibi: LocalStorage'dan çekilecek
 let nextTaskId = 1; 
 let patients = []; 
 let tasks = []; 
 
-// jsPDF için Türkçe karakter destekleyen font
 const TurkishFont = 'helvetica';
 
 // --- LOCALSTORAGE İŞLEVLERİ ---
 
-/**
- * Verileri LocalStorage'dan yükler.
- */
 function loadDataFromStorage() {
     const storedTasks = localStorage.getItem('nursiflowTasks');
     const storedPatients = localStorage.getItem('nursiflowPatients');
-    const storedNextId = localStorage.getItem('nursiflowNextTaskId');
 
     if (storedTasks) {
         tasks = JSON.parse(storedTasks);
@@ -24,16 +19,12 @@ function loadDataFromStorage() {
     if (storedPatients) {
         patients = JSON.parse(storedPatients);
     }
-    if (storedNextId) {
-        // En yüksek ID'yi bul ve bir sonraki ID'yi ayarla
-        const maxId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) : 0;
-        nextTaskId = maxId + 1;
-    }
+    
+    // En yüksek ID'yi bul ve bir sonraki ID'yi ayarla
+    const maxId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) : 0;
+    nextTaskId = maxId + 1;
 }
 
-/**
- * Güncel verileri LocalStorage'a kaydeder.
- */
 function saveDataToStorage() {
     localStorage.setItem('nursiflowTasks', JSON.stringify(tasks));
     localStorage.setItem('nursiflowPatients', JSON.stringify(patients));
@@ -43,9 +34,7 @@ function saveDataToStorage() {
 
 // --- BAŞLANGIÇTA ÇALIŞMASI GEREKEN İŞLEMLER ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Önce verileri yükle
     loadDataFromStorage();
-    
     setupNavigation();
     renderTasks();
     renderPatients();
@@ -74,7 +63,7 @@ function setupNavigation() {
     });
 }
 
-// --- GÖREV YÖNETİM İŞLEVLERİ ---
+// --- GÖREV YÖNETİM İŞLEVLERİ (Aynı Kaldı) ---
 
 function renderTasks() {
     const taskList = document.getElementById('task-list');
@@ -119,7 +108,7 @@ window.toggleTaskDone = function(taskId) {
     if (taskIndex > -1) {
         tasks[taskIndex].done = !tasks[taskIndex].done; 
         renderTasks();
-        saveDataToStorage(); // VERİ KAYDET
+        saveDataToStorage();
     }
 }
 
@@ -127,7 +116,7 @@ window.deleteTask = function(taskId) {
     if (confirm("Bu görevi silmek istediğinizden emin misiniz?")) {
         tasks = tasks.filter(t => t.id !== taskId);
         renderTasks();
-        saveDataToStorage(); // VERİ KAYDET
+        saveDataToStorage();
     }
 }
 
@@ -152,7 +141,7 @@ window.cancelTaskEdit = function() {
 }
 
 
-// --- HASTA YÖNETİM İŞLEVLERİ ---
+// --- HASTA YÖNETİM İŞLEVLERİ (Aynı Kaldı) ---
 
 function renderPatients() {
     const tableBody = document.getElementById('patient-table-body');
@@ -192,7 +181,7 @@ window.deletePatient = function(room) {
     if (confirm(`${room} numaralı hastayı silmek istediğinizden emin misiniz?`)) {
         patients = patients.filter(p => p.room !== room);
         renderPatients();
-        saveDataToStorage(); // VERİ KAYDET
+        saveDataToStorage();
     }
 }
 
@@ -221,10 +210,10 @@ window.cancelPatientEdit = function() {
 }
 
 
-// --- FORM YÖNETİMİ VE EKLEME/GÜNCELLEME İŞLEMLERİ ---
+// --- FORM YÖNETİMİ VE EKLEME/GÜNCELLEME İŞLEMLERİ (Aynı Kaldı) ---
 
 function setupForms() {
-    // GÖREV FORMU (Ekleme ve Güncelleme)
+    // GÖREV FORMU
     document.getElementById('add-task-form').addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -253,10 +242,10 @@ function setupForms() {
 
         renderTasks();
         cancelTaskEdit(); 
-        saveDataToStorage(); // VERİ KAYDET
+        saveDataToStorage();
     });
 
-    // HASTA FORMU (Ekleme ve Güncelleme)
+    // HASTA FORMU
     document.getElementById('add-patient-form').addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -287,7 +276,7 @@ function setupForms() {
 
         renderPatients();
         cancelPatientEdit(); 
-        saveDataToStorage(); // VERİ KAYDET
+        saveDataToStorage();
     });
 }
 
