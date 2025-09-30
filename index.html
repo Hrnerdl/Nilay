@@ -3,74 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nöbet Takip Uygulaması</title>
+    <title>NursiFlow | Hemşire İş Akışı Yönetimi</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header>
-        <h1>Dünyanın En Güzel Hemşiresinin Çalışma Saatleri</h1>
-    </header>
+<div class="container">
+    <nav>
+        <h2>NursiFlow</h2>
+        <a href="#" class="nav-link active" data-target="dashboard">Gösterge Paneli</a>
+        <a href="#" class="nav-link" data-target="tasks">Görev & İlaç Takibi</a>
+        <a href="#" class="nav-link" data-target="patient-list">Hasta Profilleri</a>
+        <a href="#" class="nav-link" data-target="notes">Nöbet Teslim Notları</a>
+    </nav>
 
-    <main>
-        
-        <section class="start-section" id="start-section">
-            <p>Hangi aya ait nöbetleri girmek istersin?</p>
-            <button id="open-input-modal-btn">Bu Ayın Nöbetlerini Gir/Düzenle</button>
+    <div class="content">
+
+        <section id="dashboard" class="module active">
+            <h1>Hoş Geldiniz, Hemşire!</h1>
+            <p>Bugün yapılması gereken **<span id="pending-tasks-count"></span>** göreviniz var.</p>
+            <h3>Önemli Uyarılar</h3>
+            <ul class="alert-list">
+                <li>Oda 203 (Ayşe Yılmaz): Penisiline alerjisi var!</li>
+            </ul>
         </section>
 
-        <section class="calendar-container hidden" id="calendar-view">
-            <div class="calendar-header">
-                <button id="prev-month"> &lt; </button>
-                <h2 id="current-month-year"></h2>
-                <button id="next-month"> &gt; </button>
+        <section id="tasks" class="module">
+            <h2>Görev ve İlaç Takibi</h2>
+
+            <div class="form-container">
+                <h3>Yeni Görev Ekle</h3>
+                <form id="add-task-form">
+                    <input type="text" id="task-text" placeholder="Görevin Tanımı (Oda No: İşlem)" required>
+                    <input type="time" id="task-time" required>
+                    <select id="task-priority" required>
+                        <option value="low">Düşük Öncelik</option>
+                        <option value="medium">Orta Öncelik</option>
+                        <option value="high">Yüksek Öncelik</option>
+                    </select>
+                    <button type="submit" class="button">Görevi Ekle</button>
+                </form>
             </div>
-            <div class="calendar" id="calendar">
-                </div>
-            <button id="reopen-input-modal-btn" class="edit-all-btn">Tüm Ayı Toplu Düzenle</button>
+
+            <ul id="task-list">
+                </ul>
         </section>
 
-        <div id="full-month-input-modal" class="modal">
-            <div class="modal-content large-modal">
-                <span class="close-button full-month-close-btn">&times;</span>
-                <h3><span id="modal-month-name"></span> Ayı Nöbet Girişi</h3>
-                
-                <form id="full-month-shift-form">
-                    <div class="form-group month-selector">
-                        <label for="input-month">Giriş Yapılacak Ay:</label>
-                        <input type="month" id="input-month" required>
-                    </div>
-
-                    <div id="days-input-list"></div>
-                    
-                    <button type="submit" id="save-all-shifts-btn">Tüm Nöbetleri Kaydet</button>
+        <section id="patient-list" class="module">
+            <h2>Hasta Profilleri ve Özet Bilgi</h2>
+            
+            <div class="form-container">
+                <h3>Yeni Hasta Kaydı</h3>
+                <form id="add-patient-form">
+                    <input type="text" id="patient-room" placeholder="Oda No" required>
+                    <input type="text" id="patient-name" placeholder="Ad Soyad" required>
+                    <input type="text" id="patient-diagnosis" placeholder="Tanı" required>
+                    <input type="text" id="patient-allergies" placeholder="Alerjiler (Yoksa boş bırakın)">
+                    <input type="text" id="patient-vital" placeholder="Son Vital (Örn: 120/80)">
+                    <button type="submit" class="button">Hasta Ekle</button>
                 </form>
             </div>
-        </div>
-        
-        <div id="edit-modal" class="modal">
-            <div class="modal-content">
-                <span class="close-button edit-close-btn">&times;</span>
-                <h3>Nöbeti Düzenle</h3>
-                <p id="edit-date-display"></p>
-                <form id="edit-form">
-                    <div class="form-group">
-                        <label for="edit-hours">Çalışma Saati:</label>
-                        <select id="edit-hours" name="edit-hours">
-                            <option value="0">0 Saat (İzin/Boş Gün)</option>
-                            <option value="8">8 Saat</option>
-                            <option value="16">16 Saat</option>
-                            <option value="24">24 Saat</option>
-                        </select>
-                    </div>
-                    <button type="submit">Kaydet</button>
-                    <button type="button" id="delete-shift-btn" class="delete-btn">SİL</button>
-                </form>
-            </div>
-        </div>
 
-    </main>
+            <table id="patients-table">
+                <thead>
+                    <tr>
+                        <th>Oda No</th>
+                        <th>Ad Soyad</th>
+                        <th>Tanı</th>
+                        <th>Alerjiler</th>
+                        <th>Son Vital</th>
+                    </tr>
+                </thead>
+                <tbody id="patient-table-body">
+                    </tbody>
+            </table>
+        </section>
 
-    <script src="script.js"></script>
+        <section id="notes" class="module">
+            <h2>Nöbet Teslim ve Vardiya Notları</h2>
+            <textarea id="notes-area" placeholder="Vardiya boyunca önemli gelişmeleri buraya kaydedin..."></textarea>
+            <button class="button" onclick="generateReport()">Teslim Raporu Oluştur</button>
+            <div id="report-output"></div>
+        </section>
+
+    </div>
+</div>
+
+<script src="script.js"></script>
+
 </body>
 </html>
